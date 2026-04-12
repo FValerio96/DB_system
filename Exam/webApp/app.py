@@ -1,204 +1,181 @@
-# app.py
+# app.py - StageUp Audiovisual Equipment Booking System
 from flask import Flask, render_template, request, redirect, url_for, flash
 import oracledb
 import datetime
 
 app = Flask(__name__)
-app.secret_key = 'supersecretkey'  # per flash messages
+app.secret_key = 'supersecretkey'
 
-# Configurations parameters for the Oracle DB
-DB_USER = 'System'
+# Oracle DB connection parameters
+DB_USER     = 'System'
 DB_PASSWORD = 'password123'
-DB_SID = 'localhost:1521/xe'
+DB_SID      = 'localhost:1521/xe'
 
 
 def get_db_connection():
     try:
-        connection = oracledb.connect(user=DB_USER, password=DB_PASSWORD, dsn=DB_SID)
-        return connection
+        return oracledb.connect(user=DB_USER, password=DB_PASSWORD, dsn=DB_SID)
     except Exception as e:
-        print("Errore nella connessione al DB:", e)
+        print("DB connection error:", e)
         return None
+
 
 # Homepage
 @app.route('/')
 def index():
     return render_template('index.html')
 
+
 # Operation 1: Register a new customer
 @app.route('/register_customer', methods=['GET', 'POST'])
 def register_customer():
     if request.method == 'POST':
-        code = request.form.get('code')
-        name = request.form.get('name')
-        surname = request.form.get('surname')
-        email = request.form.get('email')
-        cust_type = request.form.get('cust_type')
-        dob_str = request.form.get('dob')
-        try:
-            dob = datetime.datetime.strptime(dob_str, '%Y-%m-%d').date()
-        except Exception as e:
-            flash("Birth date non valida", "danger")
-            return redirect(url_for('register_customer'))
-
         conn = get_db_connection()
         if conn is None:
-            flash("Connection error", "danger")
+            flash("Database connection error", "danger")
             return redirect(url_for('register_customer'))
         try:
-            cur = conn.cursor()       
-            cur.callproc("proc_register_customer", [code, name, surname, email, cust_type, dob])
+            cur = conn.cursor()
+            cur.callproc("proc_register_customer", [
+                request.form['cust_id'],
+                request.form['name'],
+                request.form['cust_type'],
+                request.form['email'],
+                request.form['phone'],
+                request.form['address']
+            ])
             conn.commit()
-            flash("Customer added successfully", "success")
+            flash("Customer registered successfully", "success")
         except oracledb.DatabaseError as e:
-            flash(f"Error during customer registration: {e}", "danger")
+            flash(f"Error registering customer: {e}", "danger")
         finally:
             cur.close()
             conn.close()
         return redirect(url_for('index'))
     return render_template('register_customer.html')
 
-# Operation 2: Add a new energy contract
-@app.route('/add_contract', methods=['GET', 'POST'])
-def add_contract():
+
+# Operation 2: Record a new booking
+@app.route('/add_booking', methods=['GET', 'POST'])
+def add_booking():
     if request.method == 'POST':
-        contract_id = request.form.get('contract_id')
-        contract_type = request.form.get('contract_type')
-        start_date_str = request.form.get('start_date')
-        energy_plan = float(request.form.get('energy_plan'))
-        duration = float(request.form.get('duration'))
-        account_code = request.form.get('account_code')
-        facility_name = request.form.get('facility_name')
         try:
-            start_date = datetime.datetime.strptime(start_date_str, '%Y-%m-%d').date()
-        except Exception as e:
-            flash("Not a valid date", "danger")
-            return redirect(url_for('add_contract'))
+            booking_date = datetime.datetime.strptime(
+                request.form['booking_date'], '%Y-%m-%d').date()
+        except Exception:
+            flash("Invalid date format", "danger")
+            return redirect(url_for('add_booking'))
 
         conn = get_db_connection()
         if conn is None:
-            flash("Error during connection to the database", "danger")
-            return redirect(url_for('add_contract'))
+            flash("Database connection error", "danger")
+            return redirect(url_for('add_booking'))
         try:
             cur = conn.cursor()
-           
-            cur.callproc("proc_add_contract", [contract_id, contract_type,
-                                                 start_date, energy_plan, duration,
-                                                 account_code, facility_name])
+            cur.callproc("proc_add_booking", [
+                request.form['booking_id'],
+                request.form['btype'],
+                booking_date,
+                int(request.form['duration']),
+                float(request.form['cost']),
+                request.form['method'],
+                request.form['contract_type'],
+                request.form['team_code'],
+                request.form['customer_id'],
+                request.form['location_id']
+            ])
             conn.commit()
-            flash("Contract added successfully", "success")
+            flash("Booking recorded successfully", "success")
         except Exception as e:
-            flash(f"Error during contract addition: {e}", "danger")
+            flash(f"Error recording booking: {e}", "danger")
         finally:
             cur.close()
             conn.close()
         return redirect(url_for('index'))
-    return render_template('add_contract.html')
+    return render_template('add_booking.html')
 
-# Operation 3: Assign a facility to a management team
-@app.route('/assign_facility', methods=['GET', 'POST'])
-def assign_facility():
+
+# Operation 3: Register a new event location
+@app.route('/register_location', methods=['GET', 'POST'])
+def register_location():
     if request.method == 'POST':
-        facility_name = request.form.get('facility_name')
-        team_code = request.form.get('team_code')
         conn = get_db_connection()
         if conn is None:
-            flash("Error during connection to the database", "danger")
-            return redirect(url_for('assign_facility'))
+            flash("Database connection error", "danger")
+            return redirect(url_for('register_location'))
         try:
             cur = conn.cursor()
-            cur.callproc("proc_assign_facility", [facility_name, team_code])
+            cur.callproc("proc_register_location", [
+                request.form['location_id'],
+                request.form['street'],
+                request.form['house_number'],
+                request.form['postal_code'],
+                request.form['city'],
+                request.form['province'],
+                int(request.form['setup_time']),
+                int(request.form['equip_capacity']),
+                request.form['customer_id']
+            ])
             conn.commit()
-            flash("Facility assigned successfully", "success")
+            flash("Event location registered successfully", "success")
         except Exception as e:
-            flash(f"Error during facility assignment: {e}", "danger")
+            flash(f"Error registering location: {e}", "danger")
         finally:
             cur.close()
             conn.close()
         return redirect(url_for('index'))
-    return render_template('assign_facility.html')
+    return render_template('register_location.html')
 
-# Operation 4: View the total energy output of a facility managed by the eldest employee
-@app.route('/view_facility_energy', methods=['GET', 'POST'])
-def view_facility_energy():
-    facilities = []
-    energy_output = None
 
-    # 1. Query to retrieve the oldest manager's team code
+# Operation 4: View teams that handled setups at a specific event location
+@app.route('/teams_at_location', methods=['GET', 'POST'])
+def teams_at_location():
+    teams       = []
+    location_id = None
+
+    if request.method == 'POST':
+        location_id = request.form.get('location_id')
+        conn = get_db_connection()
+        if conn is None:
+            flash("Database connection error", "danger")
+            return redirect(url_for('teams_at_location'))
+        try:
+            cur = conn.cursor()
+            out_cursor = cur.var(oracledb.CURSOR)
+            cur.callproc("proc_get_teams_at_location", [location_id, out_cursor])
+            teams = out_cursor.getvalue().fetchall()
+            if not teams:
+                flash(f"No teams found for location '{location_id}'", "warning")
+        except Exception as e:
+            flash(f"Error retrieving teams: {e}", "danger")
+        finally:
+            cur.close()
+            conn.close()
+
+    return render_template('teams_at_location.html',
+                           teams=teams, location_id=location_id)
+
+
+# Operation 5: Event locations ranked by number of bookings (descending)
+@app.route('/ranked_locations')
+def ranked_locations():
+    locations = []
     conn = get_db_connection()
     if conn is None:
-        flash("Error during connection to the database", "danger")
-        return redirect(url_for('index'))
-    try:
-        cur = conn.cursor()
-        query_oldest_manager = """
-            SELECT DEREF(e.Team).Code AS team_code
-              FROM Employee e
-             WHERE e.Manager = 'Y'
-             AND e.Team IS NOT NULL
-             ORDER BY e.DoB ASC
-             FETCH FIRST 1 ROWS ONLY
-        """
-        cur.execute(query_oldest_manager)
-        result = cur.fetchone()
-        if result is None:
-            flash("No manager found", "danger")
-        else:
-            team_code = result[0]
-            # 2. Query to retrieve the facilities managed by the oldest manager
-            query_facilities = """
-                SELECT f.Name 
-                  FROM Facility f
-                 WHERE DEREF(f.Team).Code = :team_code
-            """
-            cur.execute(query_facilities, {'team_code': team_code})
-            facilities = [row[0] for row in cur.fetchall()]
-    except Exception as e:
-        flash(f"Error during data retrieval: {e}", "danger")
-    finally:
-        cur.close()
-        conn.close()
-
-    # 3. Retrieve the total energy output of the selected facility
-    if request.method == 'POST':
-        selected_facility = request.form.get('facility')
-        conn = get_db_connection()
-        if conn is None:
-            flash("Error during connection to the database", "danger")
-            return redirect(url_for('view_facility_energy'))
-        try:
-            cur = conn.cursor()
-            # Chiamata alla funzione SQL per ottenere il totale dell'energia in output
-            energy_output = cur.callfunc("func_get_facility_energy", oracledb.NUMBER, [selected_facility])
-            flash(f"Total Energy Output for {selected_facility}: {energy_output}", "success")
-        except Exception as e:
-            flash(f"Error during data retrieval: {e}", "danger")
-        finally:
-            cur.close()
-            conn.close()
-
-    return render_template("view_facility_energy.html", facilities=facilities, energy_output=energy_output)
-
-# Operation 5: Print a ranked list of facilities based on their efficiency scores
-@app.route('/ranked_facilities')
-def ranked_facilities():
-    facilities = []
-    conn = get_db_connection()
-    if conn is None:
-        flash("Errore di connessione al database", "danger")
+        flash("Database connection error", "danger")
         return redirect(url_for('index'))
     try:
         cur = conn.cursor()
         out_cursor = cur.var(oracledb.CURSOR)
-        cur.callproc("proc_get_ranked_facilities", [out_cursor])
-        result_cursor = out_cursor.getvalue()
-        facilities = result_cursor.fetchall()
+        cur.callproc("proc_get_locations_ranked", [out_cursor])
+        locations = out_cursor.getvalue().fetchall()
     except Exception as e:
-        flash(f"Errore durante il recupero dei dati: {e}", "danger")
+        flash(f"Error retrieving ranked locations: {e}", "danger")
     finally:
         cur.close()
         conn.close()
-    return render_template('ranked_facilities.html', facilities=facilities)
+    return render_template('ranked_locations.html', locations=locations)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

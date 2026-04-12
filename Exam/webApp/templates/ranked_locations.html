@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Ranked Locations - StageUp{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Event Locations Ranked by Bookings</h2>
+    <a href="{{ url_for('index') }}" class="btn">Back</a>
+
+    {% if locations %}
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Location ID</th>
+                <th>City</th>
+                <th>Street</th>
+                <th>Booking Count</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for loc in locations %}
+            <tr>
+                <td>{{ loc[0] }}</td>
+                <td>{{ loc[1] }}</td>
+                <td>{{ loc[2] }}</td>
+                <td>{{ loc[3] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>No locations found.</p>
+    {% endif %}
+</div>
+{% endblock %}

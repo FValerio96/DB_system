@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Teams at Location - StageUp{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Teams at Event Location</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="location_id">Event Location ID:</label>
+            <input type="text" id="location_id" name="location_id"
+                   placeholder="e.g. Loc1"
+                   value="{{ location_id or '' }}" required>
+        </div>
+        <button type="submit" class="btn">Find Teams</button>
+        <a href="{{ url_for('index') }}" class="btn">Back</a>
+    </form>
+
+    {% if teams %}
+    <h3>Setup teams for location: {{ location_id }}</h3>
+    <table class="data-table">
+        <thead>
+            <tr>
+                <th>Team Code</th>
+                <th>Team Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in teams %}
+            <tr>
+                <td>{{ t[0] }}</td>
+                <td>{{ t[1] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+</div>
+{% endblock %}

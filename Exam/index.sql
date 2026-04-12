@@ -1,133 +1,103 @@
+-- ============================================================
+-- StageUp -- Index & Performance Analysis
+-- ============================================================
 
---INDEX TEST
 SET AUTOTRACE ON
 
---AUTOTRACE
-INSERT INTO CUSTOMER
-VALUES (
-CustomerTY
-(
-    'CustomerTrace', 
-    'NameTrace', 
-    'SurnameTrace', 
-    'ciao@gmail.com',
-    'Commercial',
-    TO_DATE('1985-01-01','YYYY-MM-DD')
-)
-);
+-- Operation 1: Register a new customer (10 x day)
+INSERT INTO Customer
+VALUES (CustomerTY(
+    'CustTrace','Trace Customer','Company',
+    'trace@stageup.com','3339876543','Via Trace 1'
+));
 
---Operation2
+-- Operation 2: Record a new booking (300 x day)
+INSERT INTO Booking
+VALUES (BookingTY(
+    'BookTrace','one-time',SYSDATE,3,800,'email','seasonal',
+    (SELECT REF(t) FROM Team           t WHERE t.Code = 'Team1'),
+    (SELECT REF(c) FROM Customer       c WHERE c.ID   = 'Cust1'),
+    (SELECT REF(l) FROM Event_Location l WHERE l.ID   = 'Loc1')
+));
 
-INSERT INTO Contract
-VALUES (
-ContractTY(
-    'ContractTestIndex', 
-    'Y', 
-    'Commercial', 
-    TO_DATE('2023-01-01','YYYY-MM-DD'), 
-    100, 
-    2500, 
-    1, 
-    (SELECT REF(a) FROM Account a WHERE a.Code = 'AccountTest'), 
-    (SELECT REF(f) FROM Facility f WHERE f.Name = 'FacilityTest3')
-)
-);
+-- Operation 3: Register a new event location (50 x day)
+INSERT INTO Event_Location
+VALUES (Event_LocationTY(
+    'LocTrace','Via Trace 1','1','70000','TraceCity','TC',
+    60,100,0,
+    (SELECT REF(c) FROM Customer c WHERE c.ID = 'Cust1')
+));
 
+-- Operation 4: View teams at a specific event location (20 x day)
+SELECT DISTINCT DEREF(b.Team).Code AS team_code,
+                DEREF(b.Team).Name AS team_name
+  FROM Booking b
+ WHERE b.Location = (SELECT REF(l) FROM Event_Location l WHERE l.ID = 'Loc1');
 
-
---Operation 3
-
-SELECT COUNT(*) AS v_count_facility
-    FROM Facility
-    WHERE Name = 'Facility1';
-
-SELECT COUNT(*) AS v_count_team
-    FROM Team
-    WHERE Code = 'Team1';
-
---Operation 4
-SELECT DEREF(e.Team).Code AS team_code
-              FROM Employee e
-             WHERE e.Manager = 'Y'
-             AND e.Team IS NOT NULL
-             ORDER BY e.DoB ASC
-             FETCH FIRST 1 ROWS ONLY;
+-- Operation 5: Event locations ranked by booking count desc (5 x day)
+SELECT l.ID, l.City, l.Street, l.Booking_Count
+  FROM Event_Location l
+ ORDER BY l.Booking_Count DESC;
 
 
+-- ============================================================
+-- EXPLAIN PLAN Section
+-- ============================================================
 
---Operation 5
-SELECT Name, EfficiencyScore
-        FROM Facility
-       ORDER BY EfficiencyScore DESC;
-
-
-
---EXPLAIN PLAN
-
-
---Operation1
+-- Operation 1
 EXPLAIN PLAN FOR
-INSERT INTO CUSTOMER
-VALUES (
-CustomerTY
-(
-    'CustomerTrace', 
-    'NameTrace', 
-    'SurnameTrace', 
-    'ciao@gmail.com',
-    'Commercial',
-    TO_DATE('1985-01-01','YYYY-MM-DD')
-)
-);
+INSERT INTO Customer
+VALUES (CustomerTY(
+    'CustTrace2','Trace2','Individual',
+    'trace2@stageup.com','3339876544','Via Trace 2'
+));
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
---Operation2
+-- Operation 2
 EXPLAIN PLAN FOR
-INSERT INTO Contract
-VALUES (
-ContractTY(
-    'ContractTestIndex', 
-    'Y', 
-    'Commercial', 
-    TO_DATE('2023-01-01','YYYY-MM-DD'), 
-    100, 
-    2500, 
-    1, 
-    (SELECT REF(a) FROM Account a WHERE a.Code = 'AccountTest'), 
-    (SELECT REF(f) FROM Facility f WHERE f.Name = 'FacilityTest3')
-)
-);
+INSERT INTO Booking
+VALUES (BookingTY(
+    'BookTrace2','recurring',SYSDATE,5,1200,'phone','promotional',
+    (SELECT REF(t) FROM Team           t WHERE t.Code = 'Team2'),
+    (SELECT REF(c) FROM Customer       c WHERE c.ID   = 'Cust2'),
+    (SELECT REF(l) FROM Event_Location l WHERE l.ID   = 'Loc2')
+));
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
-
---Operation 3
+-- Operation 3
 EXPLAIN PLAN FOR
-SELECT COUNT(*) AS v_count_facility
-    FROM Facility
-    WHERE Name = 'Facility1';
+INSERT INTO Event_Location
+VALUES (Event_LocationTY(
+    'LocTrace2','Via Trace 2','2','70001','TraceCity','TC',
+    45,80,0,
+    (SELECT REF(c) FROM Customer c WHERE c.ID = 'Cust1')
+));
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
+-- Operation 4 -- WITHOUT index (drop to compare)
+DROP INDEX idx_booking_location;
+
 EXPLAIN PLAN FOR
-SELECT COUNT(*) AS v_count_team
-    FROM Team
-    WHERE Code = 'Team1';
+SELECT DISTINCT DEREF(b.Team).Code AS team_code,
+                DEREF(b.Team).Name AS team_name
+  FROM Booking b
+ WHERE b.Location = (SELECT REF(l) FROM Event_Location l WHERE l.ID = 'Loc1');
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
+-- Recreate index and rerun
+CREATE INDEX idx_booking_location ON Booking(Location);
 
---Operation 4
+-- Operation 4 -- WITH index
 EXPLAIN PLAN FOR
-SELECT DEREF(e.Team).Code AS team_code
-              FROM Employee e
-             WHERE e.Manager = 'Y'
-             AND e.Team IS NOT NULL
-             ORDER BY e.DoB ASC
-             FETCH FIRST 1 ROWS ONLY;
+SELECT DISTINCT DEREF(b.Team).Code AS team_code,
+                DEREF(b.Team).Name AS team_name
+  FROM Booking b
+ WHERE b.Location = (SELECT REF(l) FROM Event_Location l WHERE l.ID = 'Loc1');
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
 
-
---Operation 5
+-- Operation 5 -- Booking_Count already stored (redundancy): single scan
 EXPLAIN PLAN FOR
-SELECT Name, EfficiencyScore
-        FROM Facility
-       ORDER BY EfficiencyScore DESC;
+SELECT l.ID, l.City, l.Street, l.Booking_Count
+  FROM Event_Location l
+ ORDER BY l.Booking_Count DESC;
 SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);

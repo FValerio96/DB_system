@@ -1,0 +1,353 @@
+<mxfile host="65bd71144e">
+    <diagram name="SageFit Logical Schema" id="sagefit-logical-uml">
+        <mxGraphModel dx="516" dy="442" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1800" pageHeight="1400" math="0" shadow="0">
+            <root>
+                <mxCell id="0"/>
+                <mxCell id="1" parent="0"/>
+                <mxCell id="title" value="SageLogical Schema (UML)" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=24;fontStyle=1" parent="1" vertex="1">
+                    <mxGeometry x="600" y="20" width="600" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="customer_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="100" y="120" width="200" height="175" as="geometry"/>
+                </mxCell>
+                <mxCell id="customer_header" value="CustomerTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="customer_group" vertex="1">
+                    <mxGeometry width="200" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="customer_attrs" value="ID{ID}: String&lt;div&gt;Name: String&lt;/div&gt;&lt;div&gt;Type: String&lt;/div&gt;&lt;div&gt;Email: String&lt;/div&gt;&lt;div&gt;Phone: String&lt;/div&gt;&lt;div&gt;Address: String&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="customer_group" vertex="1">
+                    <mxGeometry y="35" width="200" height="140" as="geometry"/>
+                </mxCell>
+                <mxCell id="location_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="100" y="450" width="230" height="235" as="geometry"/>
+                </mxCell>
+                <mxCell id="location_header" value="Event_LocationTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="location_group" vertex="1">
+                    <mxGeometry width="230" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="location_attrs" value="ID{ID}: String&lt;div&gt;Address: String&lt;/div&gt;&lt;div&gt;House_Number: String&lt;/div&gt;&lt;div&gt;Postal_Code: String&lt;/div&gt;&lt;div&gt;City: String&lt;/div&gt;&lt;div&gt;Province: String&lt;/div&gt;&lt;div&gt;Setup_Time_Estimate: Integer&lt;/div&gt;&lt;div&gt;Equipment_Capacity: Integer&lt;/div&gt;&lt;div&gt;Customer_ID: String&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="location_group" vertex="1">
+                    <mxGeometry y="35" width="230" height="200" as="geometry"/>
+                </mxCell>
+                <mxCell id="booking_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="530" y="340" width="220" height="240" as="geometry"/>
+                </mxCell>
+                <mxCell id="booking_header" value="BookingTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="booking_group" vertex="1">
+                    <mxGeometry width="220" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="booking_attrs" value="ID{ID}: String&lt;div&gt;Type: String&lt;/div&gt;&lt;div&gt;Date: Date&lt;/div&gt;&lt;div&gt;Duration: Integer&lt;/div&gt;&lt;div&gt;Cost: Real&lt;/div&gt;&lt;div&gt;Booking_Method: String&lt;/div&gt;&lt;div&gt;Contract_Type: String&lt;/div&gt;&lt;div&gt;Team_ID: String&lt;/div&gt;&lt;div&gt;Reservation_ID: String&lt;/div&gt;&lt;div&gt;Location_ID: String&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="booking_group" vertex="1">
+                    <mxGeometry y="35" width="220" height="205" as="geometry"/>
+                </mxCell>
+                <mxCell id="team_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="950" y="340" width="210" height="150" as="geometry"/>
+                </mxCell>
+                <mxCell id="team_header" value="TeamTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="team_group" vertex="1">
+                    <mxGeometry width="210" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="team_attrs" value="ID{ID}: String&lt;div&gt;Name: String&lt;/div&gt;&lt;div&gt;Max_Members: Integer&lt;/div&gt;&lt;div&gt;Installation_Number: Integer&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="team_group" vertex="1">
+                    <mxGeometry y="35" width="210" height="115" as="geometry"/>
+                </mxCell>
+                <mxCell id="member_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="950" y="680" width="210" height="165" as="geometry"/>
+                </mxCell>
+                <mxCell id="member_header" value="MemberTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="member_group" vertex="1">
+                    <mxGeometry x="5" width="200" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="member_attrs" value="ID{ID}: String&lt;div&gt;Name: String&lt;/div&gt;&lt;div&gt;Surname: String&lt;/div&gt;&lt;div&gt;Phone: String&lt;/div&gt;&lt;div&gt;Email: String&lt;/div&gt;&lt;div&gt;Team_ID: String&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="member_group" vertex="1">
+                    <mxGeometry x="5" y="35" width="200" height="130" as="geometry"/>
+                </mxCell>
+                <mxCell id="depot_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="1320" y="320" width="220" height="190" as="geometry"/>
+                </mxCell>
+                <mxCell id="depot_header" value="DepotTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="depot_group" vertex="1">
+                    <mxGeometry width="220" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="depot_attrs" value="ID{ID}: String&lt;div&gt;Name: String&lt;/div&gt;&lt;div&gt;City: String&lt;/div&gt;&lt;div&gt;Province: String&lt;/div&gt;&lt;div&gt;Address: String&lt;/div&gt;&lt;div&gt;Region: String&lt;/div&gt;&lt;div&gt;Number_Of_Employees: Integer&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="depot_group" vertex="1">
+                    <mxGeometry y="35" width="220" height="155" as="geometry"/>
+                </mxCell>
+                <mxCell id="municipality_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="1340" y="620" width="180" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="municipality_header" value="MunicipalityTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="municipality_group" vertex="1">
+                    <mxGeometry width="180" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="municipality_attrs" value="ID{ID}: String&lt;div&gt;Name: String&lt;/div&gt;&lt;div&gt;Depot_ID: String&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="municipality_group" vertex="1">
+                    <mxGeometry y="35" width="180" height="75" as="geometry"/>
+                </mxCell>
+                <mxCell id="teamdepot_group" value="" style="group" parent="1" vertex="1" connectable="0">
+                    <mxGeometry x="1320" y="120" width="180" height="110" as="geometry"/>
+                </mxCell>
+                <mxCell id="teamdepot_header" value="Team_DepotTY" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;fontStyle=1" parent="teamdepot_group" vertex="1">
+                    <mxGeometry width="180" height="35" as="geometry"/>
+                </mxCell>
+                <mxCell id="teamdepot_attrs" value="Team_ID{ID}: String&lt;div&gt;Depot_ID{ID}: String&lt;/div&gt;" style="rounded=0;whiteSpace=wrap;html=1;fontSize=14;align=left;verticalAlign=top;spacingLeft=5;" parent="teamdepot_group" vertex="1">
+                    <mxGeometry y="35" width="180" height="65" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_place_rhombus" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="175" y="340" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_place_line1" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;" parent="1" source="customer_attrs" target="rel_place_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="200" y="400" as="sourcePoint"/>
+                        <mxPoint x="250" y="350" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_place_card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_place_line1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.7" y="1" relative="1" as="geometry">
+                        <mxPoint x="13" y="8" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_place_line2" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.433;entryY=-0.073;entryDx=0;entryDy=0;fontSize=14;entryPerimeter=0;" parent="1" source="rel_place_rhombus" target="location_header" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="200" y="400" as="sourcePoint"/>
+                        <mxPoint x="250" y="350" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_place_card2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_place_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.6" y="1" relative="1" as="geometry">
+                        <mxPoint x="17" y="-2" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_place_label" value="PLACE" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=2" parent="rel_place_line2" vertex="1" connectable="0">
+                    <mxGeometry x="-0.2" y="2" relative="1" as="geometry">
+                        <mxPoint x="48" y="-37" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_reservation_rhombus" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="380" y="180" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_reservation_line1" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.362;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;exitPerimeter=0;" parent="1" source="customer_attrs" target="rel_reservation_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="300" y="300" as="sourcePoint"/>
+                        <mxPoint x="350" y="250" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_reservation_card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_reservation_line1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.7" y="2" relative="1" as="geometry">
+                        <mxPoint x="-1" y="-12" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_reservation_line2" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;fontSize=14;edgeStyle=orthogonalEdgeStyle;" parent="1" source="rel_reservation_rhombus" target="booking_header" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="470" y="300" as="sourcePoint"/>
+                        <mxPoint x="520" y="250" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="470" y="205"/>
+                            <mxPoint x="470" y="349"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_reservation_card2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_reservation_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.7" y="1" relative="1" as="geometry">
+                        <mxPoint x="-10" y="-15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_reservation_label" value="RESERVATION" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=2" parent="rel_reservation_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="-5" y="-20" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_bl_rhombus" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="400" y="500" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_bl_line1" value="" style="endArrow=none;html=1;rounded=0;exitX=1.004;exitY=0.204;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;exitPerimeter=0;" parent="1" source="location_attrs" target="rel_bl_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="330" y="500" as="sourcePoint"/>
+                        <mxPoint x="380" y="450" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_bl_card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_bl_line1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.7" y="1" relative="1" as="geometry">
+                        <mxPoint x="5" y="15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_bl_line2" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontSize=14;" parent="1" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="449" y="526" as="sourcePoint"/>
+                        <mxPoint x="529" y="526" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_bl_card2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_bl_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.7" y="-1" relative="1" as="geometry">
+                        <mxPoint x="-10" y="15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_bl_label" value="PLACED IN" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=2" parent="rel_bl_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.1" y="1" relative="1" as="geometry">
+                        <mxPoint x="-54" y="-53" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_handled_rhombus" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="830" y="415" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_handled_line1" value="" style="endArrow=none;html=1;rounded=0;exitX=1.006;exitY=0.317;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;exitPerimeter=0;" parent="1" source="booking_attrs" target="rel_handled_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="750" y="480" as="sourcePoint"/>
+                        <mxPoint x="800" y="430" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_handled_card1" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_handled_line1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.6" y="2" relative="1" as="geometry">
+                        <mxPoint x="5" y="-15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_handled_line2" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;fontSize=14;" parent="1" source="rel_handled_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="880" y="465" as="sourcePoint"/>
+                        <mxPoint x="949" y="440" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_handled_card2" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_handled_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.6" y="-1" relative="1" as="geometry">
+                        <mxPoint x="-5" y="-15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_handled_label" value="HANDLED" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=2" parent="rel_handled_line2" vertex="1" connectable="0">
+                    <mxGeometry y="2" relative="1" as="geometry">
+                        <mxPoint x="-61" y="-38" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_has_rhombus" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1030" y="540" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_has_line1" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;" parent="1" source="team_attrs" target="rel_has_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1055" y="510" as="sourcePoint"/>
+                        <mxPoint x="1105" y="460" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_has_card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_has_line1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.6" y="1" relative="1" as="geometry">
+                        <mxPoint x="-13" y="2" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_has_line2" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;" parent="1" source="rel_has_rhombus" target="member_header" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1055" y="600" as="sourcePoint"/>
+                        <mxPoint x="1105" y="550" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_has_card2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_has_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.6" y="-1" relative="1" as="geometry">
+                        <mxPoint x="20" y="5" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_has_label" value="HAS" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=2" parent="rel_has_line2" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="25" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_belong1_rhombus" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1210" y="240" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_belong1_line1" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;edgeStyle=orthogonalEdgeStyle;" parent="1" source="team_header" target="rel_belong1_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1160" y="349" as="sourcePoint"/>
+                        <mxPoint x="1210" y="299" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1195" y="349"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_belong1_card1" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_belong1_line1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.6" y="1" relative="1" as="geometry">
+                        <mxPoint x="-8" y="-15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_belong1_line2" value="" style="endArrow=none;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;fontSize=14;edgeStyle=orthogonalEdgeStyle;" parent="1" source="rel_belong1_rhombus" target="teamdepot_attrs" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1220" y="265" as="sourcePoint"/>
+                        <mxPoint x="1270" y="215" as="targetPoint"/>
+                        <Array as="points">
+                            <mxPoint x="1280" y="265"/>
+                            <mxPoint x="1280" y="185"/>
+                        </Array>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_belong1_card2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_belong1_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.6" y="-1" relative="1" as="geometry">
+                        <mxPoint x="-5" y="15" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_belong_label" value="BELONG" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=2" parent="rel_belong1_line2" vertex="1" connectable="0">
+                    <mxGeometry y="1" relative="1" as="geometry">
+                        <mxPoint x="-49" y="5" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_belong2_line" value="" style="endArrow=none;html=1;rounded=0;exitX=0.451;exitY=0.996;exitDx=0;exitDy=0;entryX=0.363;entryY=0.046;entryDx=0;entryDy=0;fontSize=14;entryPerimeter=0;exitPerimeter=0;" parent="1" source="teamdepot_attrs" target="depot_header" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1410" y="260" as="sourcePoint"/>
+                        <mxPoint x="1460" y="210" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_belong2_card" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_belong2_line" vertex="1" connectable="0">
+                    <mxGeometry x="0.6" y="-1" relative="1" as="geometry">
+                        <mxPoint x="20" y="10" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_cover_rhombus" value="" style="rhombus;whiteSpace=wrap;html=1;fontSize=14;" parent="1" vertex="1">
+                    <mxGeometry x="1405" y="540" width="50" height="50" as="geometry"/>
+                </mxCell>
+                <mxCell id="rel_cover_line1" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;" parent="1" source="depot_attrs" target="rel_cover_rhombus" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1430" y="525" as="sourcePoint"/>
+                        <mxPoint x="1480" y="475" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_cover_card1" value="1" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_cover_line1" vertex="1" connectable="0">
+                    <mxGeometry x="-0.6" y="1" relative="1" as="geometry">
+                        <mxPoint x="8" y="4" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_cover_line2" value="" style="endArrow=none;html=1;rounded=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;fontSize=14;" parent="1" source="rel_cover_rhombus" target="municipality_header" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1430" y="600" as="sourcePoint"/>
+                        <mxPoint x="1480" y="550" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_cover_card2" value="0..*" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=14;fontStyle=1" parent="rel_cover_line2" vertex="1" connectable="0">
+                    <mxGeometry x="0.6" y="-1" relative="1" as="geometry">
+                        <mxPoint x="14" y="-4" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="rel_cover_label" value="COVER" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];fontSize=12;fontStyle=2" parent="rel_cover_line2" vertex="1" connectable="0">
+                    <mxGeometry x="-0.1" y="2" relative="1" as="geometry">
+                        <mxPoint x="58" y="-40" as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="note_customer_type" value="Type ∈ {Individual, Company}" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fontSize=12;size=0;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="30" y="320" width="120" height="40" as="geometry"/>
+                </mxCell>
+                <mxCell id="note_customer_link" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;fontSize=14;exitX=0;exitY=0;exitDx=60;exitDy=0;exitPerimeter=0;entryX=0.207;entryY=1.01;entryDx=0;entryDy=0;entryPerimeter=0;" parent="1" source="note_customer_type" target="customer_attrs" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="240" y="140" as="sourcePoint"/>
+                        <mxPoint x="290" y="90" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="note_booking_type" value="Type ∈ {recurring, one-time}&lt;div&gt;Booking_Method ∈ {phone, email, website, postal_mail}&lt;/div&gt;&lt;div&gt;Contract_Type ∈ {one-time, seasonal, promotional}&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fontSize=11;size=18;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="502.5" y="620" width="275" height="70" as="geometry"/>
+                </mxCell>
+                <mxCell id="note_booking_link" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;fontSize=14;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;" parent="1" source="note_booking_type" target="booking_attrs" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="645" y="620" as="sourcePoint"/>
+                        <mxPoint x="695" y="570" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="note_nmrelation" value="Team_Depot represents the&lt;div&gt;N:M relationship between&lt;/div&gt;&lt;div&gt;Team and Depot&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fontSize=11;size=18;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="1520" y="220" width="150" height="80" as="geometry"/>
+                </mxCell>
+                <mxCell id="note_nm_link" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;fontSize=14;exitX=0;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="note_nmrelation" target="teamdepot_attrs" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1570" y="160" as="sourcePoint"/>
+                        <mxPoint x="1520" y="185" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="note_team_members" value="Number of members ≤ Max_Members&lt;div&gt;(application-level check)&lt;/div&gt;" style="shape=note;whiteSpace=wrap;html=1;backgroundOutline=1;darkOpacity=0.05;fontSize=11;size=18;align=left;" parent="1" vertex="1">
+                    <mxGeometry x="960" y="880" width="200" height="60" as="geometry"/>
+                </mxCell>
+                <mxCell id="note_team_link" value="" style="endArrow=none;dashed=1;html=1;dashPattern=1 3;strokeWidth=2;rounded=0;fontSize=14;exitX=0.417;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;" parent="1" source="note_team_members" edge="1">
+                    <mxGeometry width="50" height="50" relative="1" as="geometry">
+                        <mxPoint x="1200" y="725" as="sourcePoint"/>
+                        <mxPoint x="1040" y="845" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+            </root>
+        </mxGraphModel>
+    </diagram>
+</mxfile>

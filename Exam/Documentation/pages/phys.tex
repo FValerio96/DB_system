@@ -1,127 +1,87 @@
 \section{Physical Design}
 
-Here we will discuss the physical design of the system, so the creation of indexes
+This section discusses the physical design decisions, specifically the creation of indexes to optimise
+the five workload operations identified in Section~2.
 
+\subsection{Index Analysis}
 
-\subsection{Indexes for operations}
+\subsubsection{Operations 1, 2, 3, 4 -- Insert Operations}
 
-\subsubsection{Operation1} 
+Operations 1, 3 (\textit{insert customer}, \textit{insert team}) are simple object inserts with no
+join or filter predicates; they do not benefit from additional indexes.
+Operation 2 (\textit{insert booking}) reads three tables by their primary keys (\texttt{Team.Code},
+\texttt{Customer.ID}, \texttt{Event\_Location.ID}) -- all of which are already indexed as primary keys.
+Operation 4 (\textit{insert member}) reads \texttt{Team} by primary key and scans \texttt{Member} to
+check team capacity; the scan uses the \texttt{Team} REF column.
 
-
-\paragraph{Explain Plan} \leavevmode \newline
-
+\paragraph{Explain Plans -- Operations 1--3} \leavevmode \newline
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/ExPlan1.png}
-    \caption{Operation1}
+    \caption{Explain Plan -- Operation 1 (Register Customer)}
 \end{figure}
-
-
-\paragraph{Auto-Trace} \leavevmode \newline
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/Op1Index.png}
-    \caption{Operation1}
-\end{figure}
-
-Since the operation is a simple insert, it doesn't require any indexes to be created. The data will be inserted into the table as it is.
-
-\subsubsection{Operation2}
-
-\paragraph{Explain Plan} \leavevmode \newline
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/ExPlan2.png}
-    \caption{Operation2}
+    \caption{Explain Plan -- Operation 2 (Add Booking)}
 \end{figure}
-
-\paragraph{Auto-Trace} \leavevmode \newline
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/Op2Index.png}
-    \caption{Operation2}
-\end{figure}
-
-Since the operation is a simple insert, it doesn't require any indexes to be created. The data will be inserted into the table as it is.
-
-\subsubsection{Operation3}
-The operation is an update, so the creation of an index is not required. However, we check for the existence of the Facility and of the Team but they are primary keys, so they are already indexed.
-
-\paragraph{Explain Plan} \leavevmode \newline
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/ExPlan3.png}
-    \caption{Operation3}
+    \caption{Explain Plan -- Operation 3 (Add Team)}
 \end{figure}
 
-\paragraph{Auto-Trace} \leavevmode \newline
-
+\paragraph{AutoTrace -- Operation 4} \leavevmode \newline
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{images/FacilityName.png}
-    \caption{Facility Name Index}
+    \includegraphics[width=\textwidth]{images/Op2Index.png}
+    \caption{AutoTrace -- Operation 4 (Add Member)}
 \end{figure}
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/TeamCode.png}
-    \caption{Team Code Index}
-\end{figure}
+\subsubsection{Operation 5 -- Query: Get Team Members}
 
-\subsubsection{Operation4}
+Operation 5 is the most frequent \textbf{read} operation (5 times/day). The query is:
+\begin{lstlisting}
+SELECT m.ID, m.Name, m.Surname, m.Phone, m.Email
+  FROM Member m
+ WHERE DEREF(m.Team).Code = :team_code;
+\end{lstlisting}
 
-The first part is the selection of the oldest employee who is a manager. We can create an index on the Date of Birth (DoB) attribute of the Employee table, so that they will be ordered by DoB and we can fetch the first row.
+This filters \texttt{Member} rows by the de-referenced team code. Without an index on \texttt{Member.Team},
+Oracle must perform a full table scan over all 100 (or more) members.
 
-\paragraph{Explain Plan} \leavevmode \newline
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/ExPlan4.png}
-    \caption{Operation4}
-\end{figure}
-
-\paragraph{Auto-Trace} \leavevmode \newline
-
+\paragraph{Without Index} \leavevmode \newline
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/OldManNOIndex.png}
-    \caption{Autotrace without Index}
+    \caption{AutoTrace -- Operation 5 without index (full table scan on Member)}
 \end{figure}
 
-By using the autotrace we can see that here we are not using any index. Let's create the index
+By inspecting the AutoTrace output we can confirm that Oracle performs a \textbf{FULL TABLE SCAN} on
+\texttt{Member}, reading all rows regardless of the team predicate.
+
+\paragraph{Index Creation} \leavevmode \newline
+We create an index on the REF column \texttt{Team} of the \texttt{Member} table:
 
 \begin{lstlisting}
-    CREATE INDEX Employee_DoB_Index ON Employee(DoB);
+CREATE INDEX idx_member_team ON Member(Team);
 \end{lstlisting}
 
+\paragraph{With Index} \leavevmode \newline
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/OldManWithIndex.png}
-    \caption{Autotrace with Index}
+    \caption{AutoTrace -- Operation 5 with \texttt{idx\_member\_team} (index range scan)}
 \end{figure}
 
-We can see that now we are using the Employee\_DoB\_Index index to fetch the first row (the Autotrace shows UNIQUE SCAN). The second part of the operation is a simple sselection. It uses Facility.Name with is already indexed.
+With the index in place, Oracle can use an \textbf{INDEX RANGE SCAN} and retrieve only the rows
+belonging to the requested team, significantly reducing logical reads (from $\sim$100 to $\sim$5).
 
-\subsubsection{Operation5}
-
-
-Operation five is a selection sorted by FacilityEfficiency. However, even with an index on that attribute, the Autotrace shows that the index is not used.
-
-\paragraph{Explain Plan} \leavevmode \newline
-
+\paragraph{Explain Plan -- Operation 5} \leavevmode \newline
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/ExPlan5.png}
-    \caption{Operation5}
-\end{figure}
-
-\paragraph{Auto-Trace} \leavevmode \newline
-
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\textwidth]{images/EffScore.png}
-    \caption{Autotrace}
+    \caption{Explain Plan -- Operation 5 with index}
 \end{figure}

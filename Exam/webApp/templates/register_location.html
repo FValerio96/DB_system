@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% block title %}Register Event Location - StageUp{% endblock %}
+{% block content %}
+<div class="container form-container">
+    <h2>Register New Event Location</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="location_id">Location ID:</label>
+            <input type="text" id="location_id" name="location_id" placeholder="e.g. LOC001" required>
+        </div>
+        <div class="form-group">
+            <label for="street">Street:</label>
+            <input type="text" id="street" name="street" placeholder="e.g. Via dei Teatri" required>
+        </div>
+        <div class="form-group">
+            <label for="house_number">House Number:</label>
+            <input type="text" id="house_number" name="house_number" placeholder="e.g. 42">
+        </div>
+        <div class="form-group">
+            <label for="postal_code">Postal Code:</label>
+            <input type="text" id="postal_code" name="postal_code" placeholder="e.g. 70121">
+        </div>
+        <div class="form-group">
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" placeholder="e.g. Bari" required>
+        </div>
+        <div class="form-group">
+            <label for="province">Province:</label>
+            <input type="text" id="province" name="province" placeholder="e.g. BA">
+        </div>
+        <div class="form-group">
+            <label for="setup_time">Setup Time Estimate (minutes):</label>
+            <input type="number" id="setup_time" name="setup_time" min="1" placeholder="e.g. 90" required>
+        </div>
+        <div class="form-group">
+            <label for="equip_capacity">Equipment Capacity (units):</label>
+            <input type="number" id="equip_capacity" name="equip_capacity" min="0" placeholder="e.g. 200" required>
+        </div>
+        <div class="form-group">
+            <label for="customer_id">Customer ID:</label>
+            <input type="text" id="customer_id" name="customer_id" placeholder="e.g. Cust1" required>
+        </div>
+        <button type="submit" class="btn">Register Location</button>
+        <a href="{{ url_for('index') }}" class="btn">Back</a>
+    </form>
+</div>
+{% endblock %}

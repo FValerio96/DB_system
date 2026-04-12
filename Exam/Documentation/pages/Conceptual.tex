@@ -1,23 +1,26 @@
 \section{Conceptual Design}
 \subsection{Requirements}
-The requirements for the database are the following:\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+The requirements for the database are the following:
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|}
     \hline
-    \multicolumn{1}{|c|}{\textbf{"GreenWorld Energy"}} \\ \hline
-    The company "GreenWorld Energy" operates decentralized renewable energy production facilities distributed 
-    across regions. Each facility is characterized by a name, location, type of energy produced (e.g., solar, wind, 
-    hydro), and maximum energy output capacity. The company also manages contracts with customers for energy 
-    supply, categorized as residential or commercial, and offers flexible pricing models based on consumption. 
-    Each customer has one or more accounts, each identified by a unique code. Every energy contract is linked to a 
-    single customer account and includes details such as start date, duration, energy plan, and cost. Facilities are 
-    overseen by management teams, each identified by a unique code, team name, and the number of projects managed. 
-    Teams are evaluated based on performance metrics such as energy efficiency, uptime, and customer satisfaction. 
-    Each team is represented by the main responsible employee and other employees identified by fiscal code, name, 
-    surname, date of birth and date of hiring. Additionally, the company supports a feedback system allowing 
-    customers to submit ratings and comments regarding service quality. Customers are classified into residential and 
-    commercial types, each identified by a unique alphanumeric code, with associated contact details and energy 
-    consumption history. \\ \hline
+    \multicolumn{1}{|c|}{\textbf{``SageFit'' -- Sports Equipment Booking System}} \\ \hline
+    The company ``SageFit'' provides sports equipment setup and rental services for events and training sessions.
+    Customers -- either individuals or companies -- can place bookings for sports equipment to be installed at a
+    chosen event location. Each customer is identified by a unique code and has contact details including email,
+    phone and address. Customers may own one or more event locations, each characterised by a full address
+    (street, house number, postal code, city, province), an estimated setup time, and an equipment capacity.
+    A booking records the date, type (one-time or recurring), duration, cost, booking method (phone, email,
+    website, or postal mail), and contract type (one-time, seasonal, or promotional). Each booking is handled
+    by exactly one installation team and is associated with one customer and one event location.
+    Teams are identified by a unique code, a name, a maximum number of members, and a counter of
+    installations performed. Each team is composed of members identified by a unique ID, name, surname, phone
+    and email; every member belongs to exactly one team and the number of members in a team must not exceed
+    its declared maximum. Teams operate from one or more depots, and a single depot can serve multiple teams
+    (many-to-many relationship). Each depot is characterised by a name, city, province, address, region, and
+    number of employees. Finally, each depot covers one or more municipalities (each municipality belongs to
+    exactly one depot), identified by a name. \\ \hline
     \end{tabularx}
     \caption{Requirements}
 \end{table}
@@ -25,105 +28,103 @@ The requirements for the database are the following:\begin{table}[H]
 
 \subsection{Analysis}
 
-\subsubsection{Reorganization of Concepts}
-The concepts can be reorganized as follows:
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|}
-    \hline  \multicolumn{1}{|c|}{\textbf{Facility}}    \\ \hline
-    Each facility is characterized by a name, location, type of energy produced (e.g., solar, wind, hydro), and maximum energy output capacity. The company also manages contracts with customers for energy supply, categorized as residential or commercial, and offers flexible pricing models based on consumption. Facilities are overseen by management teams \\ \hline
-    \end{tabularx}
-    \caption{Facility's Concepts}
-    \end{table}
+\subsubsection{Reorganisation of Concepts}
 
 \begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|}
-    \hline  \multicolumn{1}{|c|}{\textbf{Contract}}    \\ \hline
-    The company also manages contracts with customers for energy supply, categorized as residential or commercial, and offers flexible pricing models based on consumption.
-    Every enegry contract is linked to a single customer account and includes details such as start date, duration, energy plan, and cost. \\ \hline
-    \end{tabularx}
-    \caption{Contract's Concepts}
-    \end{table}
-
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|}
-    \hline  \multicolumn{1}{|c|}{\textbf{Customer}}   \\ \hline
-    Each customer has one or more accounts, each identified by a unique code. Customers are classified into residential and commercial types, each identified by a unique alphanumeric code, with associated contact details and energy consumption history. Additionally, the company supports a feedback system allowing customers to submit ratings and comments regarding service quality. \\ \hline
+    \hline \multicolumn{1}{|c|}{\textbf{Customer}} \\ \hline
+    Individuals or companies that place bookings for sports equipment. Identified by a unique code with
+    contact details (email, phone, address) and a type (Individual or Company). \\ \hline
     \end{tabularx}
     \caption{Customer's Concepts}
-    \end{table}
-
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|}
-    \hline   \multicolumn{1}{|c|}{\textbf{Account}}    \\ \hline
-    Each customer has one or more accounts, each identified by a unique code. Every energy contract is linked to a single customer account and includes details such as start date, duration, energy plan, and cost. \\ \hline
-    \end{tabularx}
-    \caption{Account's Concepts}
-    \end{table}
-
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|}
-    \hline  \multicolumn{1}{|c|}{\textbf{Feedback}}    \\ \hline
-    The company supports a feedback system allowing customers to submit ratings and comments regarding service quality. \\ \hline
-    \end{tabularx}
-    \caption{Feedback's Concepts}
-    \end{table}
-
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|}
-    \hline  \multicolumn{1}{|c|}{\textbf{Team}}    \\ \hline
-    Facilities are overseen by management teams, each identified by a unique code, team name, and the number of projects managed. Teams are evaluated based on performance metrics such as energy efficiency, uptime, and customer satisfaction. Each team is represented by the main responsible employee \\ \hline
-    \end{tabularx}
-    \caption{Team's Concepts}
-    \end{table}
-
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|}
-    \hline  \multicolumn{1}{|c|}{\textbf{Employee}}    \\ \hline
-    Each team is represented by the main responsible employee and other employees identified by fiscal code, name, surname, date of birth and date of hiring. \\ \hline
-    \end{tabularx}
-    \caption{Employee's Concepts}
 \end{table}
 
-These concepts are elegible to be entities in the database. Region is not included in the concepts because it is not a standalone concept. It is a part of the Facility concept. The Facility concept includes the location of the facility. However, it will be included in the Glossary of Term because of a synonym.
-    \subsubsection{Glossary of Terms}
-    \begin{table}[H]
-        \renewcommand{\arraystretch}{1.3} % Adjust row height
-        \begin{tabularx}{\textwidth}{|X|X|X|X|}
-        \hline
-        \textbf{Term}& \textbf{Description}  & \textbf{Connections}    & \textbf{Synonyms}     \\ \hline
-        Region      & Area where the facilities are located. & Facility     & Location \\ \hline
-        Facility     & Energy production facility. It emits energy for customers      & Contract,Teams,Region         &\\ \hline
-        Contract     & Energy supply contract. It describes the energy plan. It can be residential or commercial & Account, Facility     &  Projects        \\ \hline
-        Customer     & Customer of GreenWorld Energy. It can be residential or commercial       & Account    &        \\ \hline
-        Account      & Customer account. It associated with only one account and one contract & Contract, Customer, Feedback     &        \\ \hline
-        Feedback     & Customer feedback. Used to give a score to each team       & Account,Team     &         Ratings, customer satisfaction \\\hline
-        Team        & Groups of employees that oversees a facility. Each team has a manager       & Facility, Employee, Feedback     &  Management team       \\ \hline
-        Employee     & Employee of a GreenWorld Energy's team.      & Team     &        \\ \hline
-        \end{tabularx}
-        \caption{Glossary of Terms}
-        \end{table}
-  
-    \subsubsection{Level of Abstraction}
-    By considering the synonyms of the terms, we can identify the level of abstraction of the terms. The terms can be classified as follows:
-    \begin{itemize}
-        \item \textbf{Region} as Location
-        \item \textbf{Facility} as Facility
-        \item \textbf{Contract} as Contract
-        \item \textbf{Customer} as Customer
-        \item \textbf{Account} as Account
-        \item \textbf{Feedback} as Feedback
-        \item \textbf{Team} as Team
-        \item \textbf{Employee} as Employee
-    \end{itemize}
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+    \hline \multicolumn{1}{|c|}{\textbf{Event\_Location}} \\ \hline
+    A venue owned by a customer where sports equipment is installed. Characterised by address
+    (street, house number, postal code, city, province), estimated setup time, and equipment capacity. \\ \hline
+    \end{tabularx}
+    \caption{Event\_Location's Concepts}
+\end{table}
 
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+    \hline \multicolumn{1}{|c|}{\textbf{Booking}} \\ \hline
+    A reservation for sports equipment installation. Records type, date, duration, cost, booking method,
+    contract type. Linked to one customer, one event location, and one team. \\ \hline
+    \end{tabularx}
+    \caption{Booking's Concepts}
+\end{table}
 
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+    \hline \multicolumn{1}{|c|}{\textbf{Team}} \\ \hline
+    A group of members responsible for handling equipment installations. Identified by a code, with a name,
+    a maximum member limit, and a counter of total installations performed. \\ \hline
+    \end{tabularx}
+    \caption{Team's Concepts}
+\end{table}
+
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+    \hline \multicolumn{1}{|c|}{\textbf{Member}} \\ \hline
+    An employee belonging to exactly one team. Identified by a unique ID, with name, surname, phone and email. \\ \hline
+    \end{tabularx}
+    \caption{Member's Concepts}
+\end{table}
+
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+    \hline \multicolumn{1}{|c|}{\textbf{Depot}} \\ \hline
+    A logistic base from which teams operate. Characterised by name, city, province, address, region, and
+    number of employees. A depot can host multiple teams and a team can belong to multiple depots (N:M). \\ \hline
+    \end{tabularx}
+    \caption{Depot's Concepts}
+\end{table}
+
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+    \hline \multicolumn{1}{|c|}{\textbf{Municipality}} \\ \hline
+    A geographic unit covered by exactly one depot. Identified by a unique name. \\ \hline
+    \end{tabularx}
+    \caption{Municipality's Concepts}
+\end{table}
+
+\subsubsection{Glossary of Terms}
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|}
+    \hline
+    \textbf{Term} & \textbf{Description} & \textbf{Connections} & \textbf{Synonyms} \\ \hline
+    Customer      & Individual or company placing bookings & Booking, Event\_Location & Client \\ \hline
+    Event\_Location & Venue for equipment installation & Customer, Booking & Site, Venue \\ \hline
+    Booking       & Reservation for equipment setup & Customer, Event\_Location, Team & Reservation \\ \hline
+    Team          & Installation crew handling bookings & Booking, Member, Depot & Crew \\ \hline
+    Member        & Employee of a team & Team & Staff, Employee \\ \hline
+    Depot         & Logistic base for teams & Team, Municipality & Warehouse, Base \\ \hline
+    Municipality  & Geographic area covered by a depot & Depot & Town, Area \\ \hline
+    \end{tabularx}
+    \caption{Glossary of Terms}
+\end{table}
+
+\subsubsection{Level of Abstraction}
+\begin{itemize}
+    \item \textbf{Customer} -- entity
+    \item \textbf{Event\_Location} -- entity, owned by a Customer
+    \item \textbf{Booking} -- entity, connects Customer, Event\_Location, and Team
+    \item \textbf{Team} -- entity
+    \item \textbf{Member} -- entity, belongs to a Team
+    \item \textbf{Depot} -- entity, N:M with Team
+    \item \textbf{Municipality} -- entity, covered by a Depot
+\end{itemize}
 
 \subsubsection{Entity-Relationship Diagram}
 
@@ -131,45 +132,51 @@ These concepts are elegible to be entities in the database. Region is not includ
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/SkeletonSchema.png}
-    \caption{Skeleton Schema}
+    \caption{Skeleton Schema -- Main entities and relationships (attributes and cardinalities omitted)}
 \end{figure}
 
-\noindent This schema represents the main entities and their relationships. The entities are the following:
-\begin{itemize}
-    \item \textbf{Facility}
-    \item \textbf{Contract}
-    \item \textbf{Customer}
-    \item \textbf{Feedback}
-    \item \textbf{Team}
-\end{itemize}
-The purpose of this schema is to have a general idea of the entities and their relationships. The attributes of the entities and the cardinality of the relationships are not included in this schema. Also, some entities are not included in this schema, such as Account and Employee. These entities will be included in the final schema with all the other details.
+\noindent The main entities are: \textbf{Customer}, \textbf{Booking}, \textbf{Team}, \textbf{Depot}.
+The skeleton captures the primary flows: customers place bookings, teams handle bookings, teams operate from depots.
 
 \paragraph{FINAL SCHEMA} \leavevmode \newline
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/ER.png}
-    \caption{Final Schema}
+    \caption{Final ER Schema with all entities, attributes, and cardinalities}
 \end{figure}
 
-\noindent Note: Duration is expressed in months
+\noindent Duration is expressed in hours. Setup\_Time\_Estimate is expressed in minutes.
+
+\subsubsection{Relationships Summary}
+
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|X|X|}
+    \hline
+    \textbf{Relationship} & \textbf{Entities} & \textbf{Cardinality} \\ \hline
+    PLACE       & Customer -- Event\_Location & (1,N) -- (1,1) \\ \hline
+    RESERVATION & Customer -- Booking        & (1,N) -- (1,1) \\ \hline
+    BL          & Event\_Location -- Booking & (1,N) -- (1,1) \\ \hline
+    HANDLED     & Booking -- Team            & (1,1) -- (1,N) \\ \hline
+    HAS         & Team -- Member             & (1,N) -- (1,1) \\ \hline
+    BELONG      & Team -- Depot              & (1,N) -- (1,N) \\ \hline
+    COVER       & Depot -- Municipality      & (1,N) -- (1,1) \\ \hline
+    \end{tabularx}
+    \caption{Relationships Summary}
+\end{table}
 
 \subsubsection{Business Rules}
-The business rules are the following:
 \begin{itemize}
-    \item A customer can't be a minor
-    \item An employee can't be a minor
-    \item Each team has got only one main responsible employee
-    \item The sum of energy plan of all contracts related to a facility can't exceed the maximum energy output capacity of the facility
-    \item If an account needs to activate a new contract with the same facility, the old contract must deactivated before the new one is activated
-    \item A customer of a specific type can't have a contract of the other type
-    \item The score of a feedback can be between 0 and 5
-    \item Uptime is the number of hours the facility is active in a day. Between 6 and 8
-    \item Energy efficiency is the percentage of energy produced compared to the maximum energy output capacity of the facility. Between 0 and 100
-    \item EnergyPlan can be; 2.500 kWh, 4.500 kWh or 10.000 kWh
-    \item Cost: 500 if EnergyPlan=2.500, 750 if EnergyPlan=4.500, 1000 if EnergyPlan=10.000
-    \item A facility without a management team cannot release a new contract
+    \item \textbf{BR1}: Customer.Type $\in$ \{`Individual', `Company'\}
+    \item \textbf{BR2}: Booking.Type $\in$ \{`recurring', `one-time'\}
+    \item \textbf{BR3}: Booking.Booking\_Method $\in$ \{`phone', `email', `website', `postal\_mail'\}
+    \item \textbf{BR4}: Booking.Contract\_Type $\in$ \{`one-time', `seasonal', `promotional'\}
+    \item \textbf{BR5}: Booking.Duration $> 0$; Booking.Cost $\geq 0$
+    \item \textbf{BR6}: Team.Max\_Members $> 0$; Team.Installation\_Number $\geq 0$
+    \item \textbf{BR7}: Depot.Number\_Of\_Employees $\geq 0$
+    \item \textbf{BR8}: Event\_Location.Setup\_Time\_Estimate $> 0$; Event\_Location.Equipment\_Capacity $> 0$
+    \item \textbf{BR9}: The number of members in a team must not exceed Team.Max\_Members
+    \item \textbf{BR10}: Each booking is handled by exactly one team
+    \item \textbf{BR11}: A booking cannot be placed at an event location with zero equipment capacity
+    \item \textbf{BR12}: Team.Installation\_Number is automatically incremented each time a new booking is assigned to that team
 \end{itemize}
-
-
-

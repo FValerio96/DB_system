@@ -1,738 +1,474 @@
 \section{Implementation}
+The database is implemented on \textbf{Oracle Database} using the \textbf{Object-Relational} model.
+Each entity is defined as an Oracle \texttt{OBJECT TYPE} and stored in an \texttt{OF} table.
+References between objects are modelled with \texttt{REF} attributes.
+The N:M relationship between \texttt{Team} and \texttt{Depot} is implemented as a standard relational
+join table (\texttt{Team\_Depot}) since it carries no additional attributes.
+
 \subsection{Types Definition}
 
 \begin{lstlisting}
-    CREATE OR REPLACE TYPE TeamTY AS OBJECT (
-        Code VARCHAR2(20),
-        Name VARCHAR2(50),
-        Uptime INTEGER
-    )
+CREATE OR REPLACE TYPE TeamTY AS OBJECT (
+    Code                VARCHAR2(20),
+    Name                VARCHAR2(100),
+    Max_Members         INTEGER,
+    Installation_Number INTEGER
+)
 \end{lstlisting}
 
 \begin{lstlisting}
-    CREATE OR REPLACE TYPE FacilityTY AS OBJECT (
-        Name VARCHAR2(50),
-        Location VARCHAR2(100),
-        Type VARCHAR2(20),
-        EfficiencyScore NUMBER,
-        MaxOutputEnergy NUMBER,
-        SumOutputEnergy NUMBER,
-        Team REF TeamTY)
+CREATE OR REPLACE TYPE CustomerTY AS OBJECT (
+    ID      VARCHAR2(20),
+    Name    VARCHAR2(100),
+    Type    VARCHAR2(50),
+    Email   VARCHAR2(100),
+    Phone   VARCHAR2(20),
+    Address VARCHAR2(200)
+)
 \end{lstlisting}
 
 \begin{lstlisting}
-    CREATE OR REPLACE TYPE EmployeeTY AS OBJECT (
-        FC VARCHAR2(20),
-        Name VARCHAR2(50),
-        Surname VARCHAR2(50),
-        DoB DATE,
-        DoH DATE,
-        Manager CHAR(1),
-        Team REF TeamTY
-    )
+CREATE OR REPLACE TYPE DepotTY AS OBJECT (
+    ID                  VARCHAR2(20),
+    Name                VARCHAR2(100),
+    City                VARCHAR2(100),
+    Province            VARCHAR2(100),
+    Address             VARCHAR2(200),
+    Region              VARCHAR2(100),
+    Number_Of_Employees INTEGER
+)
 \end{lstlisting}
 
-
 \begin{lstlisting}
-    CREATE OR REPLACE TYPE CustomerTY AS OBJECT (
-        Code VARCHAR2(20),
-        Name VARCHAR2(50),
-        Surname VARCHAR2(50),
-        Email VARCHAR2(100),
-        Type VARCHAR2(20),
-        DoB DATE
-    )
+CREATE OR REPLACE TYPE MunicipalityTY AS OBJECT (
+    ID    VARCHAR2(20),
+    Name  VARCHAR2(100),
+    Depot REF DepotTY
+)
 \end{lstlisting}
 
-
 \begin{lstlisting}
-CREATE OR REPLACE TYPE AccountTY AS OBJECT (
-    Code VARCHAR2(20),
-    Customer REF CustomerTY
-    )
+CREATE OR REPLACE TYPE MemberTY AS OBJECT (
+    ID      VARCHAR2(20),
+    Name    VARCHAR2(100),
+    Surname VARCHAR2(100),
+    Phone   VARCHAR2(20),
+    Email   VARCHAR2(100),
+    Team    REF TeamTY
+)
 \end{lstlisting}
 
-
-
 \begin{lstlisting}
-CREATE OR REPLACE TYPE ContractTY AS OBJECT (
-        ID VARCHAR2(20),
-        Active CHAR(1),
-        Type VARCHAR2(20),
-        Start_Date DATE,
-        Cost NUMBER,
-        EnergyPlan NUMBER,
-        Duration NUMBER,
-        Account REF AccountTY,
-        Facility REF FacilityTY
-    )
+CREATE OR REPLACE TYPE Event_LocationTY AS OBJECT (
+    ID                  VARCHAR2(20),
+    Street              VARCHAR2(200),
+    House_Number        VARCHAR2(20),
+    Postal_Code         VARCHAR2(10),
+    City                VARCHAR2(100),
+    Province            VARCHAR2(100),
+    Setup_Time_Estimate INTEGER,
+    Equipment_Capacity  INTEGER,
+    Customer            REF CustomerTY
+)
 \end{lstlisting}
 
-
 \begin{lstlisting}
-    CREATE OR REPLACE TYPE FeedbackTY AS OBJECT (
-        Code VARCHAR2(20),
-        Message VARCHAR2(200),
-        Score INTEGER,
-        Account REF AccountTY ,
-        Team REF TeamTY
-    )
+CREATE OR REPLACE TYPE BookingTY AS OBJECT (
+    ID             VARCHAR2(20),
+    Type           VARCHAR2(50),
+    Booking_Date   DATE,
+    Duration       INTEGER,
+    Cost           NUMBER,
+    Booking_Method VARCHAR2(50),
+    Contract_Type  VARCHAR2(50),
+    Team           REF TeamTY,
+    Customer       REF CustomerTY,
+    Location       REF Event_LocationTY
+)
 \end{lstlisting}
 
 \subsection{Tables Definition}
 
 \begin{lstlisting}
-    CREATE TABLE Team OF TeamTY (
-        Code PRIMARY KEY,
-        CONSTRAINT chk_uptime CHECK (Uptime BETWEEN 6 AND 8),
-        Name NOT NULL,
-        Uptime NOT NULL
-    )
+CREATE TABLE Team OF TeamTY (
+    Code PRIMARY KEY,
+    Name NOT NULL,
+    Max_Members NOT NULL,
+    CONSTRAINT chk_max_members CHECK (Max_Members > 0),
+    Installation_Number NOT NULL,
+    CONSTRAINT chk_installation_number CHECK (Installation_Number >= 0)
+)
 \end{lstlisting}
 
-We can see that simple constraints are handled with \textbf{check}
-
 \begin{lstlisting}
-    CREATE TABLE Facility OF FacilityTY (
-        Name PRIMARY KEY,
-        CONSTRAINT chk_facility_type CHECK (Type IN (''wind'', ''solar'', ''hydro'', ''nuclear'')),
-        CONSTRAINT chk_max_output_energy CHECK (MaxOutputEnergy >= 0),
-        CONSTRAINT chk_sum_output_energy CHECK (SumOutputEnergy >= 0),
-        Location NOT NULL,
-        Type NOT NULL,
-        MaxOutputEnergy NOT NULL,
-        EfficiencyScore NOT NULL,
-        Team REFERENCES Team ON DELETE SET NULL
-    )
+CREATE TABLE Customer OF CustomerTY (
+    ID PRIMARY KEY,
+    Name NOT NULL,
+    CONSTRAINT chk_customer_type CHECK (Type IN ('Individual', 'Company')),
+    Type NOT NULL,
+    Email NOT NULL
+)
 \end{lstlisting}
 
-
 \begin{lstlisting}
-    CREATE TABLE Employee OF EmployeeTY (
-        FC PRIMARY KEY,
-        CONSTRAINT chk_manager CHECK (Manager IN (''Y'', ''N'')),
-        Name NOT NULL,
-        Surname NOT NULL,
-        DoB NOT NULL,
-        DoH NOT NULL,
-        Manager NOT NULL,
-        CONSTRAINT chk_doh_after_dob CHECK (DoH > DoB),
-        Team REFERENCES Team ON DELETE SET NULL
-    )
+CREATE TABLE Depot OF DepotTY (
+    ID PRIMARY KEY,
+    Name NOT NULL,
+    City NOT NULL,
+    Address NOT NULL,
+    Number_Of_Employees NOT NULL,
+    CONSTRAINT chk_num_employees CHECK (Number_Of_Employees >= 0)
+)
 \end{lstlisting}
 
-
 \begin{lstlisting}
-    CREATE TABLE Customer OF CustomerTY (
-        Code PRIMARY KEY,
-        CONSTRAINT chk_customer_type CHECK (Type IN (''Commercial'', ''Residential'')),
-        Name NOT NULL,
-        Surname NOT NULL,
-        Email NOT NULL,
-        Type NOT NULL,
-        DoB NOT NULL
-    )
+CREATE TABLE Municipality OF MunicipalityTY (
+    ID PRIMARY KEY,
+    Name NOT NULL UNIQUE,
+    Depot NOT NULL REFERENCES Depot ON DELETE CASCADE
+)
 \end{lstlisting}
 
-
-
 \begin{lstlisting}
-    CREATE TABLE Account OF AccountTY (
-        Code PRIMARY KEY,
-        Customer NOT NULL REFERENCES Customer ON DELETE CASCADE
-    )
+CREATE TABLE Member OF MemberTY (
+    ID PRIMARY KEY,
+    Name NOT NULL,
+    Surname NOT NULL,
+    Team NOT NULL REFERENCES Team ON DELETE CASCADE
+)
 \end{lstlisting}
 
-
 \begin{lstlisting}
-    CREATE TABLE Contract OF ContractTY (
-        ID PRIMARY KEY,
-        CONSTRAINT chk_contract_type CHECK (Type IN (''Commercial'', ''Residential'')),
-        CONSTRAINT chk_energy_plan CHECK (EnergyPlan IN (2500, 4500, 10000)),
-        CONSTRAINT chk_cost CHECK (Cost IN (2500,4500,10000)),
-        CONSTRAINT chk_active CHECK (Active IN (''Y'', ''N'')),
-        CONSTRAINT chk_cost CHECK (Cost >= 0),
-        CONSTRAINT chk_duration CHECK (Duration >= 1),
-        Start_Date NOT NULL,
-        Cost NOT NULL,
-        EnergyPlan NOT NULL,
-        Duration NOT NULL,
-        Active NOT NULL,
-        Account NOT NULL REFERENCES Account ON DELETE CASCADE,
-        Facility NOT NULL REFERENCES Facility ON DELETE CASCADE,
-        Type NOT NULL
-    )
+CREATE TABLE Event_Location OF Event_LocationTY (
+    ID PRIMARY KEY,
+    Street NOT NULL,
+    City NOT NULL,
+    Setup_Time_Estimate NOT NULL,
+    CONSTRAINT chk_setup_time CHECK (Setup_Time_Estimate > 0),
+    Equipment_Capacity NOT NULL,
+    CONSTRAINT chk_equip_capacity CHECK (Equipment_Capacity > 0),
+    Customer NOT NULL REFERENCES Customer ON DELETE CASCADE
+)
 \end{lstlisting}
 
-
 \begin{lstlisting}
-    CREATE TABLE Feedback OF FeedbackTY (
-        Code PRIMARY KEY,
-        CONSTRAINT chk_feedback_score CHECK (Score BETWEEN 1 AND 5),
-        Message NOT NULL,
-        Score NOT NULL,
-        Account REFERENCES Account ON DELETE SET NULL,
-        Team NOT NULL  REFERENCES Team ON DELETE CASCADE
-    )
+CREATE TABLE Booking OF BookingTY (
+    ID PRIMARY KEY,
+    CONSTRAINT chk_booking_type   CHECK (Type IN ('recurring','one-time')),
+    CONSTRAINT chk_booking_method CHECK (Booking_Method IN
+        ('phone','email','website','postal_mail')),
+    CONSTRAINT chk_contract_type  CHECK (Contract_Type IN
+        ('one-time','seasonal','promotional')),
+    CONSTRAINT chk_duration CHECK (Duration > 0),
+    CONSTRAINT chk_cost     CHECK (Cost >= 0),
+    Type NOT NULL, Booking_Date NOT NULL,
+    Duration NOT NULL, Cost NOT NULL,
+    Booking_Method NOT NULL, Contract_Type NOT NULL,
+    Team     NOT NULL REFERENCES Team,
+    Customer NOT NULL REFERENCES Customer,
+    Location NOT NULL REFERENCES Event_Location
+)
 \end{lstlisting}
 
-\subsection{Population procedure}
+\begin{lstlisting}
+-- N:M join table (Team <-> Depot, BELONG relationship)
+CREATE TABLE Team_Depot (
+    Team_Code VARCHAR2(20) NOT NULL,
+    Depot_ID  VARCHAR2(20) NOT NULL,
+    CONSTRAINT pk_team_depot PRIMARY KEY (Team_Code, Depot_ID),
+    CONSTRAINT fk_td_team  FOREIGN KEY (Team_Code) REFERENCES Team(Code)
+        ON DELETE CASCADE,
+    CONSTRAINT fk_td_depot FOREIGN KEY (Depot_ID)  REFERENCES Depot(ID)
+        ON DELETE CASCADE
+)
+\end{lstlisting}
+
+\subsection{Population Procedure}
 
 \begin{lstlisting}
-    CREATE OR REPLACE PROCEDURE PopulateDatabase(
-        p_num_customers IN NUMBER,
-        p_num_accounts IN NUMBER,
-        p_num_contracts IN NUMBER,
-        p_num_feedbacks IN NUMBER
-    ) IS
-    BEGIN
-    
-        FOR i IN 1..50 LOOP
-            INSERT INTO Team VALUES (
-                TeamTY(
-                    'Team' || TO_CHAR(i),
-                    'TeamName' || TO_CHAR(i),
-                    ROUND(DBMS_RANDOM.VALUE(6, 8))
-                )
-            );
-        END LOOP;
-    
-    
-    
-        FOR team_id IN 1..50 LOOP
-            FOR i IN 1..5 LOOP
-                DECLARE
-                    v_employee_code VARCHAR2(20);
-                    v_team_code     VARCHAR2(20) := 'Team' || TO_CHAR(team_id);
-                    v_dob           DATE;
-                    v_doh           DATE;
-                    v_manager       CHAR(1);
-                BEGIN
-    
-                    IF i = 1 THEN
-                        v_manager := 'Y';
-                    ELSE
-                        v_manager := 'N';
-                    END IF;
-    
-                    v_employee_code := 'FC' || TO_CHAR((team_id - 1) * 5 + i);
-                    
-    
-                    v_dob := ADD_MONTHS(SYSDATE, -ROUND(DBMS_RANDOM.VALUE(18*12, 60*12)));
-                    
-    
-                    v_doh := v_dob + ROUND(DBMS_RANDOM.VALUE(18*365, 60*365));
-    
-                    INSERT INTO Employee VALUES (
-                        EmployeeTY(
-                            v_employee_code,
-                            'Name' || v_employee_code,
-                            'Surname' || v_employee_code,
-                            v_dob,
-                            v_doh,
-                            v_manager,
-                            (SELECT REF(t) FROM Team t WHERE t.Code = v_team_code)
-                        )
-                    );
-                END;
-            END LOOP;  
-        END LOOP;
-    
-    
-        FOR i IN 1..100 LOOP
-            INSERT INTO Facility VALUES (
-                FacilityTY(
-                    'Facility' || TO_CHAR(i),
-                    'Location' || TO_CHAR(i),
-                    CASE MOD(i, 4)
-                        WHEN 0 THEN 'wind'
-                        WHEN 1 THEN 'solar'
-                        WHEN 2 THEN 'hydro'
-                        WHEN 3 THEN 'nuclear'
-                    END,
-                    100,
-                    900000000,
-                    0,
-                    (SELECT REF(t) FROM Team t WHERE t.Code = 'Team' || TO_CHAR(CEIL(i/2)))
-                )
-            );
-        END LOOP;
-    
-        
-        
-        
-    
-        FOR i IN 1..p_num_customers LOOP
-            DECLARE
-                v_dob DATE;
-            BEGIN
-               
-                v_dob := ADD_MONTHS(SYSDATE, -ROUND(DBMS_RANDOM.VALUE(18*12, 60*12)));
-    
-                INSERT INTO Customer VALUES (
-                    CustomerTY(
-                        'Customer' || TO_CHAR(i),
-                        'Name' || TO_CHAR(i),
-                        'Surname' || TO_CHAR(i),
-                        'email' || TO_CHAR(i) || '@example.com',
-                        CASE WHEN MOD(i, 2) = 0 THEN 'Commercial' ELSE 'Residential' END,
-                        v_dob
-                    )
-                );
+CREATE OR REPLACE PROCEDURE PopulateDatabase(
+    p_num_customers IN NUMBER,
+    p_num_bookings  IN NUMBER
+) IS
+BEGIN
+    -- 20 Teams
+    FOR i IN 1..20 LOOP
+        INSERT INTO Team VALUES (TeamTY(
+            'Team' || TO_CHAR(i),
+            'TeamName' || TO_CHAR(i),
+            ROUND(DBMS_RANDOM.VALUE(5, 15)), 0));
+    END LOOP;
+
+    -- 5 Members per team
+    FOR team_id IN 1..20 LOOP
+        FOR i IN 1..5 LOOP
+            DECLARE v_mid VARCHAR2(20) :=
+                'MB' || TO_CHAR((team_id-1)*5+i); BEGIN
+            INSERT INTO Member VALUES (MemberTY(
+                v_mid, 'Name'||v_mid, 'Surname'||v_mid,
+                '33'||TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1000000,9999999))),
+                'member'||v_mid||'@sagefit.com',
+                (SELECT REF(t) FROM Team t WHERE t.Code =
+                    'Team'||TO_CHAR(team_id))));
             END;
         END LOOP;
-    
-        FOR i IN 1..p_num_accounts LOOP
-            INSERT INTO Account VALUES (
-                AccountTY(
-                    'Account' || TO_CHAR(i),
-                    (SELECT REF(c) FROM Customer c WHERE c.Code = 'Customer' ||  TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1, p_num_customers))))
-                )
-            );
+    END LOOP;
+
+    -- 10 Depots, 3 Municipalities each
+    FOR i IN 1..10 LOOP
+        INSERT INTO Depot VALUES (DepotTY(
+            'Depot'||TO_CHAR(i), 'DepotName'||TO_CHAR(i),
+            'City'||TO_CHAR(i), 'Province'||TO_CHAR(i),
+            'Address'||TO_CHAR(i),
+            'Region'||TO_CHAR(CEIL(i/2)),
+            ROUND(DBMS_RANDOM.VALUE(10,50))));
+        FOR j IN 1..3 LOOP
+            INSERT INTO Municipality VALUES (MunicipalityTY(
+                'Mun'||TO_CHAR((i-1)*3+j),
+                'Municipality'||TO_CHAR((i-1)*3+j),
+                (SELECT REF(d) FROM Depot d WHERE d.ID='Depot'||TO_CHAR(i))));
         END LOOP;
-    
-        FOR i IN 1..p_num_contracts LOOP
-            DECLARE
-                v_account_code VARCHAR2(20);
-                v_customer_type VARCHAR2(20);
-                v_start_date DATE;
-                v_duration NUMBER;
-                v_end_date DATE;
-                v_active CHAR(1);
-                v_energy_plan NUMBER;
-                v_cost NUMBER;
-            BEGIN
-                v_account_code := 'Account' || TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1, p_num_accounts)));
+    END LOOP;
 
-                SELECT c.Type 
-                INTO v_customer_type
-                FROM Account a
-                JOIN Customer c ON DEREF(a.Customer).Code = c.Code
-                WHERE a.Code = v_account_code;
-                v_start_date := SYSDATE;
-                v_duration := ROUND(DBMS_RANDOM.VALUE(1, 12));
-                v_end_date := ADD_MONTHS(v_start_date, v_duration);
-                IF v_end_date >= SYSDATE THEN
-                    v_active := 'Y';
-                ELSE
-                    v_active := 'N';
-                END IF;
+    -- Team_Depot assignments
+    FOR i IN 1..20 LOOP
+        INSERT INTO Team_Depot VALUES (
+            'Team'||TO_CHAR(i), 'Depot'||TO_CHAR(MOD(i-1,10)+1));
+    END LOOP;
 
-                v_energy_plan := CASE MOD(i, 3)
-                    WHEN 0 THEN 2500
-                    WHEN 1 THEN 4500
-                    WHEN 2 THEN 10000
-                END;
-                IF v_energy_plan = 2500 THEN
-                    v_cost := 500;
-                ELSIF v_energy_plan = 4500 THEN
-                    v_cost := 750;
-                ELSE
-                    v_cost := 1000;
-                END IF;
-                
+    -- Customers and Event_Locations
+    FOR i IN 1..p_num_customers LOOP
+        INSERT INTO Customer VALUES (CustomerTY(
+            'Cust'||TO_CHAR(i), 'CustomerName'||TO_CHAR(i),
+            CASE WHEN MOD(i,2)=0 THEN 'Individual' ELSE 'Company' END,
+            'cust'||TO_CHAR(i)||'@example.com',
+            '33'||TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1000000,9999999))),
+            'Via Roma '||TO_CHAR(i)));
+        INSERT INTO Event_Location VALUES (Event_LocationTY(
+            'Loc'||TO_CHAR(i), 'Via Sport '||TO_CHAR(i), TO_CHAR(i),
+            TO_CHAR(70000+MOD(i,100)), 'City'||TO_CHAR(MOD(i,10)+1),
+            'Province'||TO_CHAR(MOD(i,5)+1),
+            ROUND(DBMS_RANDOM.VALUE(30,180)),
+            ROUND(DBMS_RANDOM.VALUE(50,500)),
+            (SELECT REF(c) FROM Customer c WHERE c.ID='Cust'||TO_CHAR(i))));
+    END LOOP;
 
-                INSERT INTO Contract VALUES (
-                    ContractTY(
-                        'Contract' || TO_CHAR(i),
-                        v_active,  
-                        v_customer_type, 
-                        v_start_date,
-                        v_cost,
-                        v_energy_plan,
-                        v_duration, 
-                        (SELECT REF(a) FROM Account a WHERE a.Code = v_account_code),
-                        (SELECT REF(f) FROM Facility f WHERE f.Name = 'Facility' || TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1, 100))))
-                    )
-                );
-            END;
-        END LOOP;
-    
-        FOR i IN 1..p_num_feedbacks LOOP
-            INSERT INTO Feedback VALUES (
-                FeedbackTY(
-                    'Feedback' || TO_CHAR(i),
-                    'Message' || TO_CHAR(i),
-                    ROUND(DBMS_RANDOM.VALUE(1, 5)),
-                    (SELECT REF(a) FROM Account a WHERE a.Code = 'Account' || TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1, p_num_accounts)))),
-                    (SELECT REF(t) FROM Team t WHERE t.Code = 'Team' || TO_CHAR(ROUND(DBMS_RANDOM.VALUE(1, 50))))
-                )
-            );
-        END LOOP;
-    END;
-\end{lstlisting}
-
-\subsection{Trigger}
-
-\begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_employee_manager
-    FOR INSERT OR UPDATE ON Employee
-    COMPOUND TRIGGER
-        v_team REF TeamTY;
-        v_count NUMBER;
-        status CHAR(1);
-    BEFORE EACH ROW IS
-    BEGIN
-        v_team := :new.Team;
-        status:=:new.Manager;
-    END BEFORE EACH ROW;
-    AFTER STATEMENT IS
-    BEGIN
-        IF status = 'Y' THEN
-            SELECT COUNT(*) INTO v_count
-            FROM Employee
-            WHERE (DEREF(Team)).Code = (DEREF(v_team)).Code
-            AND Manager = 'Y';
-    
-            IF v_count > 1 THEN
-                RAISE_APPLICATION_ERROR(-20001, 'Errore: Esiste già un manager per il team');
-            ELSE
-                DBMS_OUTPUT.PUT_LINE('Operazione eseguita con successo');
-            END IF;
-        END IF;
-    END AFTER STATEMENT;
-    END trg_employee_manager;
-\end{lstlisting}
-
-This trigger is used to check if there is already a manager in the team. If the new employee is a manager, the trigger checks if there is already a manager in the team. If there is, it raises an error, otherwise it allows the operation.
-
-\begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_contract_type
-    BEFORE INSERT OR UPDATE ON Contract
-    FOR EACH ROW
-DECLARE
-     v_customer_type VARCHAR2(20);
-BEGIN
-     SELECT DEREF(a.Customer).Type
-         INTO v_customer_type
-         FROM Account a
-         WHERE a.Code = (DEREF(:NEW.Account)).Code;
-
-     IF :NEW.Type = v_customer_type THEN
-            DBMS_OUTPUT.PUT_LINE('Operation Completed');
-     ELSE
-            RAISE_APPLICATION_ERROR(-20003, 'Error: Contract type and customer type mismatch');
-     END IF;
-END;
-\end{lstlisting}
-
-This trigger is used to check if the type of the contract is the same as the type of the customer. If they are different, it raises an error, otherwise it allows the operation.
-
-
-\begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_deactivate_old_contracts
-    FOR INSERT ON Contract
-    FOLLOWS trg_contract_type
-    COMPOUND TRIGGER
-        v_account REF AccountTY;
-        v_facility REF FacilityTY;
-        v_contract_id VARCHAR2(20); 
-        v_status CHAR(1);
-        BEFORE EACH ROW IS
+    -- Bookings
+    FOR i IN 1..p_num_bookings LOOP
+        DECLARE
+            v_cid VARCHAR2(20) := 'Cust'||TO_CHAR(
+                ROUND(DBMS_RANDOM.VALUE(1,p_num_customers)));
+            v_lid VARCHAR2(20) := 'Loc'||TO_CHAR(
+                ROUND(DBMS_RANDOM.VALUE(1,p_num_customers)));
+            v_tc  VARCHAR2(20) := 'Team'||TO_CHAR(
+                ROUND(DBMS_RANDOM.VALUE(1,20)));
         BEGIN
-            v_account := :NEW.Account;
-            v_facility := :NEW.Facility;
-            v_contract_id := :NEW.ID;
-            IF :NEW.Active = 'N' THEN
-                -- Check if contract's end date is in the past
-                IF ADD_MONTHS(:NEW.Start_Date, :NEW.Duration) < SYSDATE THEN
-                    DBMS_OUTPUT.PUT_LINE('You are inserting an expired contract');
-                ELSE
-                    DBMS_OUTPUT.PUT_LINE('Error: Contract is not active');
-                    :NEW.Active := 'Y';
-                END IF;
-            END IF;
-            v_status := :NEW.Active;
-        END BEFORE EACH ROW;
-        AFTER STATEMENT IS
-        BEGIN
-            IF v_status='Y' THEN
-                FOR rec IN (
-                    SELECT ID
-                    FROM Contract
-                    WHERE Active = 'Y'
-                    AND Account = v_account
-                    AND Facility = v_facility
-                    AND ID <> v_contract_id
-                ) LOOP
-                    UPDATE Contract
-                    SET Active = 'N'
-                    WHERE ID = rec.ID;
-    
-                    DBMS_OUTPUT.PUT_LINE('Contract deactivated');
-                END LOOP;
-    
-                DBMS_OUTPUT.PUT_LINE('Trigger trg_deactivate_old_contracts executed');
-            END IF;
-        END AFTER STATEMENT;
-    
-    END trg_deactivate_old_contracts;
-    /
+            INSERT INTO Booking VALUES (BookingTY(
+                'Book'||TO_CHAR(i),
+                CASE WHEN MOD(i,2)=0 THEN 'recurring' ELSE 'one-time' END,
+                SYSDATE+ROUND(DBMS_RANDOM.VALUE(-60,60)),
+                ROUND(DBMS_RANDOM.VALUE(1,8)),
+                ROUND(DBMS_RANDOM.VALUE(100,2000)),
+                CASE MOD(i,4) WHEN 0 THEN 'phone' WHEN 1 THEN 'email'
+                    WHEN 2 THEN 'website' WHEN 3 THEN 'postal_mail' END,
+                CASE MOD(i,3) WHEN 0 THEN 'one-time'
+                    WHEN 1 THEN 'seasonal' WHEN 2 THEN 'promotional' END,
+                (SELECT REF(t) FROM Team t WHERE t.Code=v_tc),
+                (SELECT REF(c) FROM Customer c WHERE c.ID=v_cid),
+                (SELECT REF(l) FROM Event_Location l WHERE l.ID=v_lid)));
+        END;
+    END LOOP;
+END;
 \end{lstlisting}
 
-This trigger is used to deactivate old contracts when a new contract is inserted. It checks if the new contract is active and if the end date is in the past. If the end date is in the past, the new contract is inserted as inactive. Then, it deactivates all the other contracts of the same account and facility.
-
+\subsection{Triggers}
 
 \begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_energy_plan
-BEFORE INSERT OR DELETE OR UPDATE OF Active ON Contract
+-- Trigger 1: Enforce team member capacity
+CREATE OR REPLACE TRIGGER trg_member_capacity
+BEFORE INSERT ON Member
 FOR EACH ROW
 DECLARE
-    v_facility_name Facility.Name%TYPE;
-    v_current_sum NUMBER;
-    v_max_output NUMBER;
+    v_current_count NUMBER;
+    v_max_members   NUMBER;
+    v_team_code     VARCHAR2(20);
 BEGIN
-    IF INSERTING OR UPDATING THEN
-        SELECT f.Name INTO v_facility_name FROM Facility f WHERE REF(f) = :NEW.Facility;
-    ELSE
-        SELECT f.Name INTO v_facility_name FROM Facility f WHERE REF(f) = :OLD.Facility;
-    END IF;
-    SELECT SumOutputEnergy, MaxOutputEnergy 
-    INTO v_current_sum, v_max_output 
-    FROM Facility 
-    WHERE Name = v_facility_name 
-    FOR UPDATE;
-    IF INSERTING THEN
-        IF v_current_sum + :NEW.EnergyPlan > v_max_output THEN
-            RAISE_APPLICATION_ERROR(-20001, 'SumOutputEnergy supera MaxOutputEnergy per la Facility ' || v_facility_name);
-        ELSE
-            UPDATE Facility 
-            SET SumOutputEnergy = v_current_sum + :NEW.EnergyPlan 
-            WHERE Name = v_facility_name;
-        END IF;
-    ELSIF DELETING THEN
-        UPDATE Facility 
-        SET SumOutputEnergy = v_current_sum - :OLD.EnergyPlan 
-        WHERE Name = v_facility_name;
-    ELSIF UPDATING THEN
-        IF :OLD.Active = 'Y' AND :NEW.Active = 'N' THEN
-            UPDATE Facility 
-            SET SumOutputEnergy = v_current_sum - :OLD.EnergyPlan 
-            WHERE Name = v_facility_name;
-        END IF;
-    END IF;
-END trg_energy_plan;
-\end{lstlisting}
-
-This trigger is used to update the sum of the output energy of the facility when a contract is inserted, deleted or updated. It checks if the sum of the output energy exceeds the maximum output energy of the facility. If it does, it raises an error, otherwise it allows the operation.
-
-\begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_efficiency_score
-BEFORE UPDATE ON Facility
-FOR EACH ROW
-BEGIN
-    IF :NEW.SumOutputEnergy = 0 THEN
-        :NEW.EfficiencyScore := 100;
-    ELSE
-        :NEW.EfficiencyScore := 100 * :NEW.SumOutputEnergy / :NEW.MaxOutputEnergy;
-    END IF;
-END trg_efficiency_score;
-\end{lstlisting}
-
-This trigger is used to update the efficiency score of the facility when the sum of the output energy is updated. It calculates the efficiency score as the ratio between the sum of the output energy and the maximum output energy.
-
-\begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_customer_age
-AFTER INSERT OR UPDATE ON Customer
-FOR EACH ROW
-BEGIN
-    IF MONTHS_BETWEEN(SYSDATE, :NEW.DoB) < 18*12 THEN
-        RAISE_APPLICATION_ERROR(-20001, 'Error: Customer is a minor');
+    v_team_code := DEREF(:NEW.Team).Code;
+    SELECT COUNT(*) INTO v_current_count
+      FROM Member WHERE DEREF(Team).Code = v_team_code;
+    SELECT t.Max_Members INTO v_max_members
+      FROM Team t WHERE t.Code = v_team_code;
+    IF v_current_count >= v_max_members THEN
+        RAISE_APPLICATION_ERROR(-20040,
+            'Error: Team ' || v_team_code ||
+            ' has reached its maximum capacity of ' ||
+            v_max_members || ' members.');
     END IF;
 END;
 \end{lstlisting}
 
-\begin{lstlisting}
-CREATE OR REPLACE TRIGGER trg_employee_age
-AFTER INSERT OR UPDATE ON Employee
-FOR EACH ROW
-BEGIN
-    IF MONTHS_BETWEEN(SYSDATE, :NEW.DoB) < 18*12 THEN
-        RAISE_APPLICATION_ERROR(-20002, 'Error: Employee is a minor');
-    END IF;
-END;
-\end{lstlisting}
-
-These two triggers are used to check if the age of the customer or the employee is less than 18 years old. If it is, it raises an error, otherwise it allows the operation.
+This trigger enforces Business Rule BR9: before inserting a new member, it counts the current members
+in the target team and compares with \texttt{Max\_Members}. If the limit is already reached, the insert is blocked.
 
 \begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_contract_cost
-BEFORE INSERT OR UPDATE ON Contract
-FOR EACH ROW
-BEGIN
-    IF UPDATING THEN
-        IF (:NEW.EnergyPlan <> :OLD.EnergyPlan) OR (:NEW.Cost <> :OLD.Cost) THEN
-            RAISE_APPLICATION_ERROR(-20003, 'Error: Energy plan and cost cannot be changed');
-        END IF;
-    END IF;
-
-    IF INSERTING THEN
-        IF :NEW.EnergyPlan = 2500 THEN
-            :NEW.Cost := 500;
-        ELSIF :NEW.EnergyPlan = 4500 THEN
-            :NEW.Cost := 750;
-        ELSE
-            :NEW.Cost := 1000;
-        END IF;
-    END IF;
-END;
-\end{lstlisting}
-
-This trigger is used to check if the energy plan and the cost of the contract are changed. If they are, it raises an error, otherwise it allows the operation. It also sets the cost of the contract based on the energy plan when a new contract is inserted.
-
-
-\begin{lstlisting}
-    CREATE OR REPLACE TRIGGER trg_facility_no_team
-BEFORE INSERT ON Contract
+-- Trigger 2: Increment Installation_Number on booking insert
+CREATE OR REPLACE TRIGGER trg_update_installation_count
+AFTER INSERT ON Booking
 FOR EACH ROW
 DECLARE
-    v_facility REF FacilityTY;
+    v_team_code VARCHAR2(20);
 BEGIN
-    v_facility := :NEW.Facility;
-    IF (DEREF(v_facility)).Team IS NULL THEN
-        RAISE_APPLICATION_ERROR(-20004, 'Error: Facility has no team');
+    v_team_code := DEREF(:NEW.Team).Code;
+    UPDATE Team
+       SET Installation_Number = Installation_Number + 1
+     WHERE Code = v_team_code;
+END;
+\end{lstlisting}
+
+This trigger maintains the redundant \texttt{Installation\_Number} attribute automatically (BR12).
+Every time a booking is inserted, the counter of the responsible team is incremented by one,
+avoiding costly aggregation queries at read time (see Section~2 redundancy analysis).
+
+\begin{lstlisting}
+-- Trigger 3: Reject booking if Equipment_Capacity = 0
+CREATE OR REPLACE TRIGGER trg_check_location_capacity
+BEFORE INSERT ON Booking
+FOR EACH ROW
+DECLARE
+    v_capacity NUMBER;
+BEGIN
+    SELECT l.Equipment_Capacity INTO v_capacity
+      FROM Event_Location l
+     WHERE REF(l) = :NEW.Location;
+    IF v_capacity <= 0 THEN
+        RAISE_APPLICATION_ERROR(-20050,
+            'Error: Event Location has no available equipment capacity.');
     END IF;
 END;
 \end{lstlisting}
 
-This trigger is used to check if the facility has a team. If it doesn't, it raises an error, otherwise the contract is inserted.
+This trigger enforces Business Rule BR11: a booking cannot be placed at a location with zero equipment capacity.
 
 \subsection{Operations}
 
 \begin{lstlisting}
-    --------------------------------------------------------------------
-    -- Procedure 1: Add a new customer to the database
-    --------------------------------------------------------------------
-    
-    CREATE OR REPLACE PROCEDURE proc_register_customer (
-        p_code      IN VARCHAR2,
-        p_name      IN VARCHAR2,
-        p_surname   IN VARCHAR2,
-        p_email     IN VARCHAR2,
-        p_type      IN VARCHAR2,  -- 'Commercial' o 'Residential'
-        p_dob       IN DATE
-    ) AS
-    BEGIN
-        INSERT INTO Customer
-        VALUES (
-            CustomerTY(p_code, p_name, p_surname, p_email, p_type, p_dob)
-        );
-        COMMIT;
-    END;
-    /
-    
-    --------------------------------------------------------------------
-    -- Procedure 2: Add a new contract to the database
-    --------------------------------------------------------------------
-    CREATE OR REPLACE PROCEDURE proc_add_contract (
-        p_contract_id    IN VARCHAR2,
-        p_contract_type  IN VARCHAR2,  -- 'Commercial' o 'Residential'
-        p_start_date     IN DATE,
-        p_energy_plan    IN NUMBER,    -- 2500, 4500 o 10000
-        p_duration       IN NUMBER,    
-        p_account_code   IN VARCHAR2,
-        p_facility_name  IN VARCHAR2
-    ) AS
-        p_cost NUMBER;
-    BEGIN
-        IF p_energy_plan = 2500 THEN
-            p_cost := 500;
-        ELSIF p_energy_plan = 4500 THEN
-            p_cost := 750;
-        ELSE
-            p_cost := 1000;
-        END IF;
-        INSERT INTO Contract
-        VALUES (
-            ContractTY(
-                p_contract_id,
-                'N',
-                p_contract_type,
-                p_start_date,
-                p_cost,
-                p_energy_plan,
-                p_duration,
-                (SELECT REF(a) FROM Account a WHERE a.Code = p_account_code),
-                (SELECT REF(f) FROM Facility f WHERE f.Name = p_facility_name)
-            )
-        );
-        COMMIT;
-    EXCEPTION
-        WHEN OTHERS THEN
-           RAISE_APPLICATION_ERROR(-20011, 'Errore in proc_add_contract: ' || SQLERRM);
-    END;
-/
+-- Procedure 1: Register a new customer
+CREATE OR REPLACE PROCEDURE proc_register_customer (
+    p_id      IN VARCHAR2,
+    p_name    IN VARCHAR2,
+    p_type    IN VARCHAR2,  -- 'Individual' or 'Company'
+    p_email   IN VARCHAR2,
+    p_phone   IN VARCHAR2,
+    p_address IN VARCHAR2
+) AS
+BEGIN
+    INSERT INTO Customer
+    VALUES (CustomerTY(p_id, p_name, p_type, p_email, p_phone, p_address));
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20001,
+            'Error in proc_register_customer: ' || SQLERRM);
+END;
+\end{lstlisting}
 
-    
-    --------------------------------------------------------------------
-    -- Procedure 3: Assign a facility to a team
-    --------------------------------------------------------------------
-    CREATE OR REPLACE PROCEDURE proc_assign_facility (
-        p_facility_name IN VARCHAR2,
-        p_team_code     IN VARCHAR2
-    ) AS
-        v_count_team NUMBER;
-        v_count_facility NUMBER;
-    BEGIN
-        -- Check if the facility exists
-        SELECT COUNT(*) INTO v_count_facility
-        FROM Facility
-        WHERE Name = p_facility_name;
-    
-        IF v_count_facility = 0 THEN
-            RAISE_APPLICATION_ERROR(-20013, 'Error: Facility not found!');
-        END IF;
-    
-        -- Check if the team exists
-        SELECT COUNT(*) INTO v_count_team
-        FROM Team
-        WHERE Code = p_team_code;
-    
-        IF v_count_team = 0 THEN
-            RAISE_APPLICATION_ERROR(-20014, 'Error: Team not found!');
-        END IF;
-        UPDATE Facility
-        SET Team = (SELECT REF(t) FROM Team t WHERE t.Code = p_team_code)
-        WHERE Name = p_facility_name;
-    
-        COMMIT;
-    EXCEPTION
-        WHEN OTHERS THEN
-            RAISE_APPLICATION_ERROR(-20012, 'Errore in proc_assign_facility: ' || SQLERRM);
-    END;
-    /
-    --------------------------------------------------------------------
-    -- Function 4: Return the total energy output of a facility
-    --------------------------------------------------------------------
-    CREATE OR REPLACE FUNCTION func_get_facility_energy (
-        p_facility_name IN VARCHAR2
-    ) RETURN NUMBER AS
-        v_total_energy NUMBER;
-    BEGIN
-         
-        -- Return the total energy output of the facility
-        SELECT f.SumOutputEnergy
-          INTO v_total_energy
-          FROM Facility f
-         WHERE f.Name = p_facility_name;
-        RETURN v_total_energy;
-    EXCEPTION
-        WHEN OTHERS THEN
-           RAISE_APPLICATION_ERROR(-20013, 'Errore in func_get_facility_energy: ');
-    END;
-    /
-    
-    --------------------------------------------------------------------
-    -- Procedure 5: Get the ranked facilities by efficiency score
-    --------------------------------------------------------------------
-    CREATE OR REPLACE PROCEDURE proc_get_ranked_facilities (
-        p_cursor OUT SYS_REFCURSOR
-    ) AS
-    BEGIN
-        OPEN p_cursor FOR
-          SELECT Name, EfficiencyScore
-            FROM Facility
-           ORDER BY EfficiencyScore DESC;
-    END;
-    /
+\begin{lstlisting}
+-- Procedure 2: Add a new booking
+CREATE OR REPLACE PROCEDURE proc_add_booking (
+    p_id             IN VARCHAR2,
+    p_type           IN VARCHAR2,
+    p_date           IN DATE,
+    p_duration       IN INTEGER,
+    p_cost           IN NUMBER,
+    p_method         IN VARCHAR2,
+    p_contract_type  IN VARCHAR2,
+    p_team_code      IN VARCHAR2,
+    p_customer_id    IN VARCHAR2,
+    p_location_id    IN VARCHAR2
+) AS
+    v_count_team     NUMBER;
+    v_count_customer NUMBER;
+    v_count_location NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_count_team     FROM Team          WHERE Code=p_team_code;
+    SELECT COUNT(*) INTO v_count_customer FROM Customer       WHERE ID=p_customer_id;
+    SELECT COUNT(*) INTO v_count_location FROM Event_Location WHERE ID=p_location_id;
+    IF v_count_team=0 THEN
+        RAISE_APPLICATION_ERROR(-20010,'Error: Team not found!');
+    END IF;
+    IF v_count_customer=0 THEN
+        RAISE_APPLICATION_ERROR(-20011,'Error: Customer not found!');
+    END IF;
+    IF v_count_location=0 THEN
+        RAISE_APPLICATION_ERROR(-20012,'Error: Event Location not found!');
+    END IF;
+    INSERT INTO Booking VALUES (BookingTY(
+        p_id, p_type, p_date, p_duration, p_cost, p_method, p_contract_type,
+        (SELECT REF(t) FROM Team           t WHERE t.Code=p_team_code),
+        (SELECT REF(c) FROM Customer       c WHERE c.ID=p_customer_id),
+        (SELECT REF(l) FROM Event_Location l WHERE l.ID=p_location_id)));
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20013,
+            'Error in proc_add_booking: ' || SQLERRM);
+END;
+\end{lstlisting}
+
+\begin{lstlisting}
+-- Procedure 3: Add a new team
+CREATE OR REPLACE PROCEDURE proc_add_team (
+    p_code        IN VARCHAR2,
+    p_name        IN VARCHAR2,
+    p_max_members IN INTEGER
+) AS
+BEGIN
+    INSERT INTO Team VALUES (TeamTY(p_code, p_name, p_max_members, 0));
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20020,
+            'Error in proc_add_team: ' || SQLERRM);
+END;
+\end{lstlisting}
+
+\begin{lstlisting}
+-- Procedure 4: Add a new member to a team
+CREATE OR REPLACE PROCEDURE proc_add_member (
+    p_id      IN VARCHAR2,
+    p_name    IN VARCHAR2,
+    p_surname IN VARCHAR2,
+    p_phone   IN VARCHAR2,
+    p_email   IN VARCHAR2,
+    p_team    IN VARCHAR2
+) AS
+    v_count_team NUMBER;
+BEGIN
+    SELECT COUNT(*) INTO v_count_team FROM Team WHERE Code=p_team;
+    IF v_count_team=0 THEN
+        RAISE_APPLICATION_ERROR(-20030,'Error: Team not found!');
+    END IF;
+    INSERT INTO Member VALUES (MemberTY(
+        p_id, p_name, p_surname, p_phone, p_email,
+        (SELECT REF(t) FROM Team t WHERE t.Code=p_team)));
+    COMMIT;
+EXCEPTION
+    WHEN OTHERS THEN
+        RAISE_APPLICATION_ERROR(-20031,
+            'Error in proc_add_member: ' || SQLERRM);
+END;
+\end{lstlisting}
+
+\begin{lstlisting}
+-- Procedure 5: Get all members of a specific team (cursor output)
+CREATE OR REPLACE PROCEDURE proc_get_team_members (
+    p_team_code IN  VARCHAR2,
+    p_cursor    OUT SYS_REFCURSOR
+) AS
+BEGIN
+    OPEN p_cursor FOR
+        SELECT m.ID, m.Name, m.Surname, m.Phone, m.Email
+          FROM Member m
+         WHERE DEREF(m.Team).Code = p_team_code;
+END;
 \end{lstlisting}

@@ -1,0 +1,83 @@
+\relax 
+\providecommand \babel@aux [2]{\global \let \babel@toc \@gobbletwo }
+\@nameuse{bbl@beforestart}
+\providecommand\hyper@newdestlabel[2]{}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
+\babel@aux{english}{}
+\@writefile{toc}{\contentsline {section}{\numberline {1}Conceptual Design}{2}{section.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Requirements}{2}{subsection.1.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {1}{\ignorespaces Requirements}}{2}{table.caption.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Analysis}{3}{subsection.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.1}Reorganisation of Concepts}{3}{subsubsection.1.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {2}{\ignorespaces Company Facilities Concepts}}{3}{table.caption.3}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {3}{\ignorespaces Team Concepts}}{3}{table.caption.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {4}{\ignorespaces Member Concepts}}{3}{table.caption.5}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {5}{\ignorespaces Municipality Concepts}}{3}{table.caption.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {6}{\ignorespaces Customer Concepts}}{4}{table.caption.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {7}{\ignorespaces Event Location Concepts}}{4}{table.caption.8}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {8}{\ignorespaces Booking Concepts}}{4}{table.caption.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.2}Glossary of Terms}{5}{subsubsection.1.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {9}{\ignorespaces Glossary of Terms}}{5}{table.caption.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.3}Ambiguity Resolutions}{5}{subsubsection.1.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.4}Design Choice: Central Office Entity}{6}{subsubsection.1.2.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.5}Entity-Relationship Diagram}{7}{subsubsection.1.2.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{SKELETON SCHEMA}{7}{section*.11}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Skeleton Schema -- Main entities and relationships (attributes omitted)}}{7}{figure.caption.12}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{FINAL SCHEMA}{8}{section*.13}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Final ER Schema with all entities, attributes, cardinalities and relationships.}}{8}{figure.caption.14}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.6}Entities and Attributes}{9}{subsubsection.1.2.6}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {10}{\ignorespaces Entities and Attributes (* = derived redundant attribute)}}{9}{table.caption.15}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.7}Relationships}{11}{subsubsection.1.2.7}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {11}{\ignorespaces Relationships}}{11}{table.caption.16}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {1.2.8}Business Rules (not expressible in the ER diagram)}{12}{subsubsection.1.2.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {2}Logical Design}{13}{section.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.1}Volume Table}{13}{subsection.2.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {12}{\ignorespaces Volume Table (yearly estimates; E = entity, R = relationship)}}{13}{table.caption.17}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.2}Access Table}{13}{subsection.2.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {13}{\ignorespaces Operation 1 -- Total: $2 \times 10 = 20$ ops/day}}{13}{table.caption.18}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {14}{\ignorespaces Operation 2 -- Total: $(2+1+1+1+2+2) \times 300 = 2{,}700$ ops/day}}{14}{table.caption.19}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {15}{\ignorespaces Operation 3 -- Total: $(1+2) \times 50 = 150$ ops/day}}{14}{table.caption.20}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {16}{\ignorespaces Operation 4 -- Total: $(1+100+100) \times 20 = 4{,}020$ ops/day}}{14}{table.caption.21}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {17}{\ignorespaces Operation 5 (with \texttt  {Booking\_Count} redundancy) -- Total: $1{,}000 \times 5 = 5{,}000$ ops/day}}{15}{table.caption.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.3}Redundancy Analysis}{15}{subsection.2.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.1}\texttt  {Booking\_Count} on Event\_Location (for Operation 5)}{15}{subsubsection.2.3.1}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {18}{\ignorespaces Op5 without \texttt  {Booking\_Count}}}{15}{table.caption.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {2.3.2}\texttt  {Installation\_Number} on Team}{15}{subsubsection.2.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.4}Relational Schema (logical model)}{16}{subsection.2.4}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {19}{\ignorespaces Relational Schema (* = redundant derived attribute)}}{16}{table.caption.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {2.5}UML Class Diagram}{17}{subsection.2.5}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces UML Class Diagram -- Object-Relational Logical Schema, analysis phase (exported from \texttt  {Draw/logic\_model\_uml.drawio})}}{17}{figure.caption.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {3}Implementation}{18}{section.3}\protected@file@percent }
+\newlabel{sec:implementation}{{3}{18}{Implementation}{section.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Object Types}{18}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.2}Tables}{19}{subsection.3.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Stored Procedures}{21}{subsection.3.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Triggers}{23}{subsection.3.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {4}Physical Design}{25}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Index Analysis}{25}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Operation 4 -- View Teams at a Specific Event Location (20/day)}{25}{subsubsection.4.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Without index}{25}{section*.26}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {4}{\ignorespaces AutoTrace -- Operation 4 without \texttt  {idx\_booking\_location} (full table scan)}}{25}{figure.caption.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Index creation}{25}{section*.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{With index}{25}{section*.29}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5}{\ignorespaces AutoTrace -- Operation 4 with \texttt  {idx\_booking\_location} (index range scan)}}{26}{figure.caption.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Operation 5 -- Ranked Locations (5/day)}{26}{subsubsection.4.1.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Explain Plans}{26}{section*.31}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {6}{\ignorespaces Explain Plan -- Operation 4 with \texttt  {idx\_booking\_location}}}{27}{figure.caption.32}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {7}{\ignorespaces Explain Plan -- Operation 5 (scan Event\_Location with Booking\_Count stored)}}{28}{figure.caption.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Performance Summary}{28}{subsection.4.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {20}{\ignorespaces Performance summary for critical operations}}{28}{table.caption.34}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Web Interface}{29}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Architecture}{29}{subsection.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Routes}{29}{subsection.5.2}\protected@file@percent }
+\@writefile{lot}{\contentsline {table}{\numberline {21}{\ignorespaces Flask routes and corresponding operations}}{29}{table.caption.35}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Backend Code}{29}{subsection.5.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Frontend Screenshots}{32}{subsection.5.4}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {8}{\ignorespaces Homepage}}{32}{figure.caption.36}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {9}{\ignorespaces Operation 1 -- Register a new customer}}{32}{figure.caption.37}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {10}{\ignorespaces Operation 2 -- Record a new booking}}{32}{figure.caption.38}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {11}{\ignorespaces Operation 3 -- Register a new event location}}{33}{figure.caption.39}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {12}{\ignorespaces Operation 4 -- View teams that handled setups at an event location}}{33}{figure.caption.40}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {13}{\ignorespaces Operation 5 -- Event locations ranked by booking count (descending)}}{33}{figure.caption.41}\protected@file@percent }
+\gdef \@abspage@last{34}

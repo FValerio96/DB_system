@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Add Team - SageFit{% endblock %}
+{% block content %}
+<div class="container form-container">
+    <h2>Add New Team</h2>
+    <form method="POST">
+        <div class="form-group">
+            <label for="team_code">Team Code:</label>
+            <input type="text" id="team_code" name="team_code" placeholder="e.g. Team21" required>
+        </div>
+        <div class="form-group">
+            <label for="team_name">Team Name:</label>
+            <input type="text" id="team_name" name="team_name" placeholder="e.g. Alpha Setup Crew" required>
+        </div>
+        <div class="form-group">
+            <label for="max_members">Max Members:</label>
+            <input type="number" id="max_members" name="max_members" min="1" placeholder="e.g. 10" required>
+        </div>
+        <button type="submit" class="btn">Add Team</button>
+        <a href="{{ url_for('index') }}" class="btn">Back</a>
+    </form>
+</div>
+{% endblock %}

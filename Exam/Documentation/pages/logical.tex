@@ -1,193 +1,134 @@
 \section{Logical Design}
 
 \subsection{Volume Table}
-Lets consider the volumes for a year
+Volumes are estimated for one year of operation.
 
 \begin{table}[H]
     \scriptsize
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|X|X|X|}
     \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Volume}    & \textbf{Description}     \\ \hline
-    Facility & E & 100 & Number of facilities (Given) \\ \hline
-    Contract & E & 900.000 & Number of contracts. 100 facilities * 500 contracts per facility * 12 months * 1.5 contracts per account \\ \hline
-    Customer & E & 300.000 & Number of customers.(ASSUMPTION) \\ \hline
-    Account & E & 600.000 & Number of accounts. 300.000 customers * 2 accounts per customer on average\\ \hline
-    Team & E & 50 & Number of teams. (ASSUMPTION) \\ \hline
-    Employee & E & 250 & Number of employees. 5 employees per team * 50 teams (ASSUMPTION) \\ \hline
-    Feedback & E & 600.000 & Number of feedbacks.\\ \hline
-    Provides & R & 900.000 & Each contract is provided by a single facility \\ \hline
-    Linked & R & 900.000 & On average each account has 1.5 contracts \\ \hline
-    Has & R & 600.000 & Each customer 2 accounts on average \\ \hline
-    OverseenBy & R & 100 & Each facility is overseen by a single team. Each team oversees 2 facilities, on average \\ \hline
-    Configuration & R & 500 & Each team constists of 5 employees on average \\ \hline
-    Gives & R & 500.000 & Each feedback is given by a single account.Not all accounts give feedback  \\ \hline
-    Evaluation & R & 500.000 & Each feedback is linked to a single team\\ \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Volume} & \textbf{Notes} \\ \hline
+    Customer        & E & 10.000  & Assumption \\ \hline
+    Event\_Location & E & 8.000   & $\sim$0.8 locations per customer on average \\ \hline
+    Booking         & E & 50.000  & 10 bookings/day $\times$ 365 days $\times$ overheads \\ \hline
+    Team            & E & 20      & Assumption \\ \hline
+    Member          & E & 100     & 5 members per team $\times$ 20 teams \\ \hline
+    Depot           & E & 10      & Assumption \\ \hline
+    Municipality    & E & 30      & $\sim$3 municipalities per depot \\ \hline
+    PLACE           & R & 8.000   & Customer $\to$ Event\_Location (1:N) \\ \hline
+    RESERVATION     & R & 50.000  & Customer $\to$ Booking (1:N) \\ \hline
+    BL              & R & 50.000  & Event\_Location $\to$ Booking (1:N) \\ \hline
+    HANDLED         & R & 50.000  & Booking $\to$ Team (N:1) \\ \hline
+    HAS             & R & 100     & Team $\to$ Member (1:N) \\ \hline
+    BELONG          & R & 40      & $\sim$2 depots per team on average (N:M) \\ \hline
+    COVER           & R & 30      & Depot $\to$ Municipality (1:N) \\ \hline
     \end{tabularx}
     \caption{Volume Table}
 \end{table}
 
 \subsection{Access Table}
 
-\textbf{Operation1:} Register a new customer (50 times per day)\\
+\noindent\textbf{Operation 1:} Register a new customer (30 times per day)
 \begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|X|X|X|}
     \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
     Customer & E & 1 & W \\ \hline
     \end{tabularx}
-    \caption{Access Table for Operation1}
+    \caption{Access Table -- Operation 1}
 \end{table}
-\noindent Total Cost: 2 * 50 = 100 per day
-\newline
-\textbf{Operation2:} Register a new energy contract (50 times per day)\\
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|X|X|X|}
-    \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-    Contract & E & 1 & W \\ \hline
-    Provides & R & 1 & W \\ \hline
-    Facility & E & 1 & R \\ \hline
-    Linked & R & 1 & W \\ \hline
-    Account & E & 1 & R \\ \hline
-    Provides & R & 9000 & R \\ \hline
-    Contract & E & 9000 & R \\ \hline
-    Facility & E & 1 & W \\ \hline
-    \end{tabularx}
-    \caption{Access Table for Operation2}
-\end{table}
-\noindent Total Cost: (2+2+1+2+1+2+9000+9000)*200=3.602.000 per day
+\noindent Total Cost: $2 \times 30 = 60$ per day\\
 
-\noindent Every time we need to update the efficiency score of the facility related to the contracts.
-\newline
-\noindent \textbf{Operation3:} Assign a facility to a management team (50 times per day)\\
+\noindent\textbf{Operation 2:} Add a new booking (10 times per day)
 \begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|X|X|X|}
     \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-    Team & E & 1 & R \\ \hline
-    OverseenBy & R & 1 & W \\ \hline
-    Facility & E & 1 & R \\ \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
+    Booking         & E & 1    & W \\ \hline
+    Team            & E & 1    & R \\ \hline
+    Customer        & E & 1    & R \\ \hline
+    Event\_Location & E & 1    & R \\ \hline
+    Team            & E & 1    & W (Installation\_Number update) \\ \hline
     \end{tabularx}
-    \caption{Access Table for Operation3}
+    \caption{Access Table -- Operation 2}
 \end{table}
-\noindent Total Cost: (1+2+1)*50=200 per day
-\newline
-\noindent \textbf{Operation4:} View the total energy output of a specific facility managed by the eldest employee (1 per month = 0.03 per day)\\
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|X|X|X|}
-    \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-    Employee & E & 250 & R \\ \hline
-    Configuration & R & 1 & R \\ \hline
-    Team & E & 1 & R \\ \hline
-    OverseenBy & R & 2 & R \\ \hline
-    Facility & E & 2 & R \\ \hline
-    Provides & R & 9000 & R \\ \hline
-    Contract & E & 9000 & R \\ \hline
-    \end{tabularx}
-    \caption{Access Table for Operation4}
-\end{table}
-\noindent Total Cost: (250+1+1+1+2+9000+9000)*0.03=547.65 per day
-\newline
-\noindent Each team oversees, on average, twow facilities. We need to choose only one of them, which provides on average 9000 contracts.
-In this case we don't have sumEnergyOutput in the schema as attribute of the facility, so we need to compute it every time. If we introduce it, the cost will be
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
-    \begin{tabularx}{\textwidth}{|X|X|X|X|}
-    \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-    Employee & E & 250 & R \\ \hline
-    Configuration & R & 1 & R \\ \hline
-    Team & E & 1 & R \\ \hline
-    OverseenBy & R & 2 & R \\ \hline
-    Facility & E & 2 & R \\ \hline
-    \end{tabularx}
-    \caption{Access Table for Operation4 with redundancy}
-\end{table}
-\noindent Total Cost: (250+1+1+2+2)*0.03=7.68 per day
-\newline
-\noindent But in this case we need to update it every time we add a new contract, so the total cost of \textbf{Operation2} will be:
+\noindent Total Cost: $(2 + 1 + 1 + 1 + 2) \times 10 = 70$ per day\\
 
+\noindent\textbf{Operation 3:} Add a new team (5 times per day)
 \begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|X|X|X|}
     \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-    Contract & E & 1 & W \\ \hline
-    Provides & R & 1 & W \\ \hline
-    Facility & E & 1 & R \\ \hline
-    Facility & E & 1 & W \\ \hline
-    Linked & R & 1 & W \\ \hline
-    Account & E & 1 & R \\ \hline
-    Facility & E & 1 & W \\ \hline
-    Provides & R & 9000 & R \\ \hline
-    Contract & E & 9000 & R \\ \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
+    Team & E & 1 & W \\ \hline
     \end{tabularx}
-    \caption{Access Table for Operation2 with redundancy}
+    \caption{Access Table -- Operation 3}
 \end{table}
-\noindent Total Cost: (2+2+1+2+2+1+2+9000+9000)*200=3.602.400 per day
-\newline
-\noindent So the total cost without redundancy is 3.602.000 +547.65 = 3.602.547.65, while the total cost with redundancy is 3.602.400 + 7.68 = 3.602.407.68 per day. So we should keep the redundancy in this case. 
-\newline
-\noindent \textbf{Operation5:} Print a ranked list of facilities based on their efficiency scores (10 per day)
+\noindent Total Cost: $2 \times 5 = 10$ per day\\
+
+\noindent\textbf{Operation 4:} Add a new member to a team (2 times per day)
 \begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|X|X|X|}
     \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-    Facility & E & 100 & R \\ \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
+    Team   & E & 1    & R (existence check) \\ \hline
+    Member & E & 5    & R (capacity check: count members in team) \\ \hline
+    Member & E & 1    & W \\ \hline
     \end{tabularx}
-    \caption{Access Table for Operation5}
+    \caption{Access Table -- Operation 4}
 \end{table}
-\noindent Total Cost: 100*10 = 1000 per day
+\noindent Total Cost: $(1 + 5 + 2) \times 2 = 16$ per day\\
 
-\noindent We can try to remove the redundancy of the efficiencyScore in facilities
+\noindent\textbf{Operation 5:} Get all members of a specific team (5 times per day) $\star$
 \begin{table}[H]
-\renewcommand{\arraystretch}{1.3} % Adjust row height
-\begin{tabularx}{\textwidth}{|X|X|X|X|}
-\hline
-\textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-Facility & E & 100 & R \\ \hline
-Provides & R & 900.000 & R \\ \hline
-Contract & E & 900.000 & R \\ \hline
-\end{tabularx}
-\caption{Access Table for Operation5 without redundancy}
-\end{table}
-\noindent Total Cost: (100+900.000+900.000)*10 = 18.001.000 per day 
-\begin{table}[H]
-    \renewcommand{\arraystretch}{1.3} % Adjust row height
+    \renewcommand{\arraystretch}{1.3}
     \begin{tabularx}{\textwidth}{|X|X|X|X|}
     \hline
-    \textbf{Concept}& \textbf{Type}  & \textbf{Access}    & \textbf{Type}     \\ \hline
-    Contract & E & 1 & W \\ \hline
-    Provides & R & 1 & W \\ \hline
-    Facility & E & 1 & R \\ \hline
-    Linked & R & 1 & W \\ \hline
-    Account & E & 1 & R \\ \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
+    Member & E & 5 & R (avg 5 members per team) \\ \hline
     \end{tabularx}
-    \caption{Access Table for Operation2 without redundancy}
+    \caption{Access Table -- Operation 5 (most frequent query)}
 \end{table}
-\noindent Total Cost: (2+2+1+2+1)*200=1.600 per day
-\newline
-\noindent Now we don't need to update the the efficiency score everytime we register a new contract.
+\noindent Total Cost: $5 \times 5 = 25$ per day\\
 
-\noindent So the total cost without redundancy is 18.002.600, while the total cost with redundancy is 2.402.000 + 1000 = 2.403.000 per day.
+\subsubsection{Redundancy Analysis: \texttt{Installation\_Number}}
 
-\noindent We shouuld keep the redundancy in this case.
+\noindent The attribute \texttt{Installation\_Number} in \textbf{Team} stores the number of bookings handled
+by that team. This is a \textbf{derived, redundant} attribute. We analyse whether to keep it.\\
 
-\subsubsection{Redundancies and Generalization}
-\begin{itemize}
-    \item \textbf{Redundancies:} The number of contracts handled by a team (projects) is not stored in the schema, as it can be calculated by using the facilities managed by the team and their contracts. The score of the team can be derived by the following formula: \[
-\text{score} = \frac{\frac{1}{\text{energy\_efficiency}} + \text{uptime} + \text{AVG}(\text{customer\_score})}{3}
+\noindent\textit{Without redundancy} -- to compute Installation\_Number for a team we must scan Booking:
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|}
+    \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
+    Booking & E & 2.500 & R (50.000 bookings / 20 teams) \\ \hline
+    \end{tabularx}
+    \caption{Cost of computing Installation\_Number without redundancy}
+\end{table}
+
+\noindent\textit{With redundancy} -- Operation 2 must update Team in addition to inserting Booking:
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|}
+    \hline
+    \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
+    Team & E & 1 & W (extra write per booking insert) \\ \hline
+    \end{tabularx}
+    \caption{Extra cost of maintaining Installation\_Number (redundancy)}
+\end{table}
+
+\noindent Assuming Installation\_Number is queried at most $q$ times per day, the break-even point is:
+\[
+q \times 2.500 > 10 \times 2 \quad \Rightarrow \quad q > 0.008
 \]
- and is not stored in the schema to avoid redundancy. Due to the previous analysis, the redundancy of the efficiency score and sumEngergyOutput in the facility are kept in the schema
-    \item \textbf{Generalization:} The schema doesn't contain any generalization since there aren't different operations for them. There is a \textbf{type} attribute in the \textbf{Customer} and \textbf{Contract} entities so that the business rule related to the type of contract can be enforced.
-\end{itemize}
+Since $q \geq 1$, it is \textbf{always convenient to keep the redundancy}. The extra write cost of the
+trigger is negligible ($+2 \times 10 = 20$ accesses/day) compared to the savings on read queries.
+The redundancy is maintained automatically by \texttt{trg\_update\_installation\_count}.
 
 
 \subsection{UML Schema}
@@ -195,5 +136,36 @@ Contract & E & 900.000 & R \\ \hline
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{images/UML.png}
-    \caption{UML Schema}
+    \caption{UML Schema -- Logical design of SageFit}
 \end{figure}
+
+\subsection{Relational Schema}
+
+\begin{table}[H]
+    \renewcommand{\arraystretch}{1.3}
+    \begin{tabularx}{\textwidth}{|X|}
+    \hline
+    \texttt{Customer(\underline{ID}, Name, Type, Email, Phone, Address)} \\ \hline
+    \texttt{Event\_Location(\underline{ID}, Street, House\_Number, Postal\_Code, City, Province,} \\
+    \quad \texttt{Setup\_Time\_Estimate, Equipment\_Capacity, Customer\_ID)} \\ \hline
+    \texttt{Booking(\underline{ID}, Type, Booking\_Date, Duration, Cost, Booking\_Method,} \\
+    \quad \texttt{Contract\_Type, Team\_Code, Customer\_ID, Location\_ID)} \\ \hline
+    \texttt{Team(\underline{Code}, Name, Max\_Members, Installation\_Number)} \\ \hline
+    \texttt{Member(\underline{ID}, Name, Surname, Phone, Email, Team\_Code)} \\ \hline
+    \texttt{Depot(\underline{ID}, Name, City, Province, Address, Region, Number\_Of\_Employees)} \\ \hline
+    \texttt{Municipality(\underline{ID}, Name, Depot\_ID)} \\ \hline
+    \texttt{Team\_Depot(\underline{Team\_Code, Depot\_ID})} \\ \hline
+    \end{tabularx}
+    \caption{Relational Schema (underlined attributes = primary key)}
+\end{table}
+
+\subsubsection{Translation Rules Applied}
+\begin{enumerate}
+    \item \textbf{Customer $\to$ Event\_Location (1:N PLACE)}: FK \texttt{Customer\_ID} added to \texttt{Event\_Location}
+    \item \textbf{Customer $\to$ Booking (1:N RESERVATION)}: FK \texttt{Customer\_ID} added to \texttt{Booking}
+    \item \textbf{Event\_Location $\to$ Booking (1:N BL)}: FK \texttt{Location\_ID} added to \texttt{Booking}
+    \item \textbf{Team $\to$ Booking (1:N HANDLED)}: FK \texttt{Team\_Code} added to \texttt{Booking}
+    \item \textbf{Team $\to$ Member (1:N HAS)}: FK \texttt{Team\_Code} added to \texttt{Member}
+    \item \textbf{Team $\leftrightarrow$ Depot (N:M BELONG)}: New join table \texttt{Team\_Depot} with both FKs
+    \item \textbf{Depot $\to$ Municipality (1:N COVER)}: FK \texttt{Depot\_ID} added to \texttt{Municipality}
+\end{enumerate}
