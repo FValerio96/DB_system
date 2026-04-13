@@ -223,7 +223,7 @@ A booking represents the rental and installation of equipment requested by a cus
         arrangement. Both are attributes of \textit{Booking}.
   \item \textbf{Number of installations}: ``number of installations made'' is an attribute of Team.
         It is a \emph{derived redundancy} (count of bookings handled) maintained automatically. 
-        This is a voulontary redundancy, consequence of a frequent operation. 
+        This is a voluntary redundancy, consequence of a frequent operation. 
 \end{enumerate}
 
 \subsubsection{Design Choice: Central Office Entity}
@@ -243,7 +243,7 @@ directly between Customers, Teams, and Bookings—namely, the entities that acti
 \begin{figure}[H]
   \centering
   \includegraphics[width=\textwidth]{images/skeleton-er.png}
-  \caption{Skeleton Schema -- Main entities and relationships (attributes omitted)}
+  \caption{Skeleton Schema -- Main entities and relationships (attributes and cardinalities omitted)}
 \end{figure}
 
 \noindent The skeleton schema shows the primary entities and the flow of the domain:
@@ -309,7 +309,7 @@ directly between Customers, Teams, and Bookings—namely, the entities that acti
     & Customer (1,N) -- Event\_Location (1,1) \\ \hline
   RESERVATION & A customer makes one or more bookings; each booking is made by one customer
     & Customer (1,N) -- Booking (1,1) \\ \hline
-  LOCATED_IN & An event location hosts one or more bookings; each booking is at one location
+  LOCATED\_IN & An event location hosts one or more bookings; each booking is at one location
     & Event\_Location (1,N) -- Booking (1,1) \\ \hline
   HANDLED & A booking is handled by exactly one team; a team handles one or more bookings
     & Booking (1,1) -- Team (1,N) \\ \hline
@@ -359,7 +359,7 @@ Additional volumes are estimated (marked with \dag).
   HAS             & R & 700        & 1:1 cardinality with member \\ \hline
   PLACE           & R & 1{,}000    & 1:1 cardinality with event location \\ \hline
   RESERVATION     & R & 100{,}000  & 1:1 cardinality with booking \\ \hline
-  LOCATED_IN      & R & 100{,}000  & 1:1 cardinality with booking \\ \hline
+  LOCATED\_IN      & R & 100{,}000  & 1:1 cardinality with booking \\ \hline
   HANDLED         & R & 100{,}000  & 1:1 cardinality with booking \\ \hline
   \end{tabularx}
   \caption{Volume Table (yearly estimates; E = entity, R = relationship)}
@@ -382,25 +382,35 @@ Additional volumes are estimated (marked with \dag).
   \renewcommand{\arraystretch}{1.3}
   \begin{tabularx}{\textwidth}{|X|X|X|X|}
   \hline \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
-  Booking         & E & 1 & W \\ \hline
-  Team            & E & 1 & R (FK lookup) \\ \hline
-  Customer        & E & 1 & R (FK lookup) \\ \hline
-  Event\_Location & E & 1 & R (FK lookup) \\ \hline
+  Customer        & E & 1 & R (verify exists) \\ \hline
+  Event\_Location & E & 1 & R (verify exists) \\ \hline
+  Team            & E & 1 & R (verify exists) \\ \hline
+  Booking         & E & 1 & W (create booking) \\ \hline
+  Booking         & E & 1 & R (retrieve new booking id) \\ \hline
+  RESERVATION     & R & 1 & W (link Customer $\to$ Booking) \\ \hline
+  LOCATED\_IN     & R & 1 & W (link Event\_Location $\to$ Booking) \\ \hline
+  HANDLED         & R & 1 & W (link Team $\to$ Booking) \\ \hline
   Team            & E & 1 & W (Installation\_Number + 1) \\ \hline
   Event\_Location & E & 1 & W (Booking\_Count + 1) \\ \hline
   \end{tabularx}
-  \caption{Operation 2 -- Total: $(2+1+1+1+2+2) \times 300 = 2{,}700$ ops/day}
+\caption{Operation 2 -- Total: $(1+1+1+2+1+2+2+2+2+2) \times 300 = 4{,}800$ ops/day}
 \end{table}
+\textbf{Please note:} the accesses to update the redundant attributes (\texttt{Installation\_Number} and \texttt{Booking\_Count}) 
+are included here, as they are part of the booking creation process, but they are managed by triggers and not directly by the operations.
+
+\pagebreak
 
 \noindent\textbf{Operation 3 -- Register a new event location} (50/day)
 \begin{table}[H]
   \renewcommand{\arraystretch}{1.3}
   \begin{tabularx}{\textwidth}{|X|X|X|X|}
   \hline \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
-  Customer        & E & 1 & R (FK lookup) \\ \hline
-  Event\_Location & E & 1 & W \\ \hline
+  Customer        & E & 1 & R (verify exists) \\ \hline
+  Event\_Location & E & 1 & W (create location) \\ \hline
+  Event\_Location & E & 1 & R (retrieve new location id) \\ \hline
+  PLACE           & R & 1 & W (link Customer $\to$ Event\_Location) \\ \hline
   \end{tabularx}
-  \caption{Operation 3 -- Total: $(1+2) \times 50 = 150$ ops/day}
+  \caption{Operation 3 -- Total: $(1+2+1+2) \times 50 = 300$ ops/day}
 \end{table}
 
 \noindent\textbf{Operation 4 -- View team(s) at a specific event location} (20/day)
@@ -408,12 +418,16 @@ Additional volumes are estimated (marked with \dag).
   \renewcommand{\arraystretch}{1.3}
   \begin{tabularx}{\textwidth}{|X|X|X|X|}
   \hline \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
-  Event\_Location & E & 1   & R (find the location) \\ \hline
-  Booking         & E & 100 & R (avg bookings per location: 100{,}000/1{,}000) \\ \hline
-  Team            & E & 100 & R (DEREF per booking to get team info) \\ \hline
+  Event\_Location & E & 1{,}000 & R (worst-case full table scan, $N$: 1{,}000) \\ \hline
+  LOCATED\_IN     & R & 100     & R (avg 100 bookings per location: 100{,}000/1{,}000) \\ \hline
+  Booking         & E & 100     & R (retrieve each booking) \\ \hline
+  HANDLED         & R & 100     & R (traverse to team for each booking) \\ \hline
+  Team            & E & 100     & R (retrieve team info) \\ \hline
   \end{tabularx}
-  \caption{Operation 4 -- Total: $(1+100+100) \times 20 = 4{,}020$ ops/day}
+  \caption{Operation 4 -- Total cost (assuming R=1, W=2): $(1{,}000+100+100+100+100) \times 20 = 28{,}000$ ops/day}
 \end{table}
+
+\pagebreak
 
 \noindent\textbf{Operation 5 -- Event locations ranked by booking count descending} (5/day)
 \begin{table}[H]
@@ -432,46 +446,47 @@ and \texttt{Booking\_Count} on \textbf{Event\_Location}.
 
 \subsubsection{\texttt{Booking\_Count} on Event\_Location (for Operation 5)}
 
-Without the redundancy, Op5 requires joining \texttt{Event\_Location} and \texttt{Booking}:
+Without the redundancy, Op5 requires traversing all bookings via the \texttt{LOCATED\_IN} relationship:
 \begin{table}[H]
   \renewcommand{\arraystretch}{1.3}
   \begin{tabularx}{\textwidth}{|X|X|X|X|}
   \hline \textbf{Concept} & \textbf{Type} & \textbf{Accesses} & \textbf{R/W} \\ \hline
   Event\_Location & E & 1{,}000    & R \\ \hline
+  LOCATED\_IN     & R & 100{,}000  & R (traverse all bookings per location) \\ \hline
   Booking         & E & 100{,}000  & R (count all bookings) \\ \hline
   \end{tabularx}
   \caption{Op5 without \texttt{Booking\_Count}}
 \end{table}
-\noindent Cost Op5 without redundancy: $(1{,}000 + 100{,}000) \times 5 = 505{,}000$ ops/day.
+\noindent Cost Op5 without redundancy: $(1{,}000 + 100{,}000 + 100{,}000) \times 5 = 1{,}005{,}000$ ops/day.
 
 \noindent With the redundancy, Op2 must additionally update \texttt{Booking\_Count}:
 \[
   \Delta_{\text{Op2}} = 2 \times 300 = 600 \text{ ops/day extra}
 \]
-\[
-  \text{Total \textbf{without} redundancy} = 20 + 1{,}500 + 150 + 4{,}020 + 505{,}000
-  = \mathbf{510{,}690} \text{ ops/day}
-\]
-\[
-  \text{Total \textbf{with} redundancy} = 20 + 2{,}700 + 150 + 4{,}020 + 5{,}000
-  = \mathbf{11{,}890} \text{ ops/day}
-\]
+
+\noindent Total cost comparison for the five operations in the two scenarios:
+\begin{itemize}
+    \item \textbf{Total without redundancy:} \\
+    $20 + 3{,}900 + 250 + 8{,}020 + 1{,}005{,}000 = \mathbf{1{,}017{,}190} \text{ ops/day}$
+
+    \item \textbf{Total with redundancy:} \\
+    $20 + 4{,}500 + 250 + 8{,}020 + 5{,}000 = \mathbf{17{,}790} \text{ ops/day}$
+\end{itemize}
 
 \noindent \textbf{Conclusion}: keeping \texttt{Booking\_Count} reduces the total workload by a factor
-of $\sim$43. The redundancy is justified and maintained automatically by a trigger.
+of $\sim$57. The redundancy is justified and maintained automatically by a trigger.
 
 \subsubsection{\texttt{Installation\_Number} on Team}
 
-Without the redundancy, computing the installation count for a team requires counting all bookings
-handled by that team:
+Without the redundancy, computing the installation count for a specific team requires finding all bookings handled by that team. Assuming a worst-case full table scan (no indexes on the foreign keys), the database must scan the entire Booking table:
 \[
-  \text{Bookings per team on average} = 100{,}000 / 100 = 1{,}000 \text{ reads per query}
+  \text{Reads per query} = \text{Volume}(\text{Booking}) = 100{,}000
 \]
 The break-even (assuming this is queried $q$ times per day):
 \[
-  q \times 1{,}000 > 300 \times 2 \quad \Rightarrow \quad q > 0.6
+  q \times 100{,}000 > 300 \times 2 \quad \Rightarrow \quad q > 0.006
 \]
-Since $q \geq 1$, keeping the redundancy is justified.
+Since even a single query per day ($q = 1$) incurs $100{,}000$ reads against a maintenance penalty of only $600$ writes, keeping the redundancy is massively justified.
 
 \subsection{Relational Schema (logical model)}
 
@@ -479,36 +494,20 @@ Since $q \geq 1$, keeping the redundancy is justified.
   \renewcommand{\arraystretch}{1.4}
   \begin{tabularx}{\textwidth}{|X|}
   \hline
-  \texttt{Customer(\underline{ID}, Name, Type, Email, Phone, Address)} \\ \hline
-  \texttt{Event\_Location(\underline{ID}, Street, House\_Number, Postal\_Code, City, Province,}\\
+  \texttt{\textbf{Customer}(\underline{ID}, Name, Type, Email, Phone, Address)} \\ \hline
+  \texttt{\textbf{Event\_Location}(\underline{ID}, Street, House\_Number, Postal\_Code, City, Province,}
   \texttt{\quad Setup\_Time\_Estimate, Equipment\_Capacity, Booking\_Count*, Customer\_ID)} \\ \hline
-  \texttt{Booking(\underline{ID}, Type, Booking\_Date, Duration, Cost, Booking\_Method,}\\
+  \texttt{\textbf{Booking}(\underline{ID}, Type, Booking\_Date, Duration, Cost, Booking\_Method,}\\
   \texttt{\quad Contract\_Type, Team\_Code, Customer\_ID, Location\_ID)} \\ \hline
-  \texttt{Team(\underline{Code}, Name, Max\_Members, Installation\_Number*, Depot\_ID)} \\ \hline
-  \texttt{Member(\underline{ID}, Name, Surname, Phone, Email, Team\_Code)} \\ \hline
-  \texttt{CentralOffice(\underline{ID}, Name, Address, City, Province, Number\_Of\_Employees)} \\ \hline
-  \texttt{Depot(\underline{ID}, Name, Address, City, Province, Number\_Of\_Employees, Region)} \\ \hline
-  \texttt{Municipality(\underline{ID}, Name, Depot\_ID)} \\ \hline
+  \texttt{\textbf{Team}(\underline{Code}, Name, Max\_Members, Installation\_Number*, Depot\_ID)} \\ \hline
+  \texttt{\textbf{Member}(\underline{ID}, Name, Surname, Phone, Email, Team\_Code)} \\ \hline
+  \texttt{\textbf{Depot}(\underline{ID}, Name, Address, City, Province, Number\_Of\_Employees, Region)} \\ \hline
+  \texttt{\textbf{Municipality}(\underline{ID}, Name, Depot\_ID)} \\ \hline
   \end{tabularx}
   \caption{Relational Schema (* = redundant derived attribute)}
 \end{table}
 
-\noindent\textbf{Translation rules applied:}
-\begin{enumerate}
-  \item \textbf{Generalisation Office}: two separate tables \texttt{CentralOffice} and \texttt{Depot}
-        sharing the same attribute structure; \texttt{Depot} adds \texttt{Region}.
-  \item \textbf{COVERS (Depot $\to$ Municipality, 1:N)}: FK \texttt{Depot\_ID} added to
-        \texttt{Municipality}.
-  \item \textbf{BELONGS\_TO (Team $\to$ Depot, N:1)}: FK \texttt{Depot\_ID} added to \texttt{Team}.
-  \item \textbf{HAS (Team $\to$ Member, 1:N)}: FK \texttt{Team\_Code} added to \texttt{Member}.
-  \item \textbf{PLACE (Customer $\to$ Event\_Location, 1:N)}: FK \texttt{Customer\_ID} added to
-        \texttt{Event\_Location}.
-  \item \textbf{RESERVATION (Customer $\to$ Booking, 1:N)}: FK \texttt{Customer\_ID} added to
-        \texttt{Booking}.
-  \item \textbf{BL (Event\_Location $\to$ Booking, 1:N)}: FK \texttt{Location\_ID} added to
-        \texttt{Booking}.
-  \item \textbf{HANDLED (Booking $\to$ Team, N:1)}: FK \texttt{Team\_Code} added to \texttt{Booking}.
-\end{enumerate}
+\pagebreak
 
 \subsection{UML Class Diagram}
 
@@ -517,19 +516,6 @@ Since $q \geq 1$, keeping the redundancy is justified.
   \includegraphics[width=\textwidth]{images/logic_model_uml.png}
   \caption{UML Class Diagram -- Object-Relational Logical Schema, analysis phase (exported from \texttt{Draw/logic\_model\_uml.drawio})}
 \end{figure}
-
-\noindent\textbf{Note on diagram vs.\ final implementation.}
-The UML diagram above was produced during the analysis phase and reflects the
-N:M interpretation of the BELONG relationship (Team $\leftrightarrow$ Depot),
-which included a \texttt{Team\_Depot} join table.
-Based on the requirements text (``Depots have one or more setup teams''), this
-was subsequently resolved to a \textbf{1:N} relationship (Ambiguity Resolution \#3):
-the join table was removed and a direct \texttt{Depot REF DepotTY} attribute was
-added to \texttt{TeamTY}.
-Additionally, the diagram pre-dates two design decisions made in the logical phase:
-(i) the \textit{Office} generalisation (\texttt{OfficeTY}/\texttt{CentralOfficeTY}), and
-(ii) the redundant \texttt{Booking\_Count} attribute on \texttt{Event\_LocationTY}.
-The Oracle implementation in Section~\ref{sec:implementation} reflects all final decisions.
 
 \newpage
 % ============================================================================

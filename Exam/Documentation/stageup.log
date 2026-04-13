@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.12)  12 APR 2026 22:00
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (TeX Live 2026) (preloaded format=pdflatex 2026.4.12)  13 APR 2026 11:41
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -941,45 +941,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 291--291
  []
 
 [8 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/ER-def.png>]
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:316: Missing $ inserted.
-<inserted text> 
-                $
-l.316   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:316: Missing $ inserted.
-<inserted text> 
-                $
-l.316   \end{tabularx}
-                      
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:316: Missing $ inserted.
-<inserted text> 
-                $
-l.316   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:316: Missing $ inserted.
-<inserted text> 
-                $
-l.316   \end{tabularx}
-                      
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
-
 Underfull \hbox (badness 1142) in paragraph at lines 316--316
 \OT1/cmr/m/n/12 i-ties; each mu-nic-
  []
@@ -1009,25 +970,6 @@ Underfull \hbox (badness 3375) in paragraph at lines 316--316
 \OT1/cmr/m/n/12 ca-tion be-longs to
  []
 
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:316: Missing $ inserted.
-<inserted text> 
-                $
-l.316   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:316: Missing $ inserted.
-<inserted text> 
-                $
-l.316   \end{tabularx}
-                      
-I've inserted something that you may have forgotten.
-(See the <inserted text> above.)
-With luck, this will get me unwedged. But if you
-really didn't forget anything, try typing `2' now; then
-my insertion and my current dilemma will both disappear.
-
 
 Underfull \hbox (badness 1412) in paragraph at lines 316--316
 []|\OT1/cmr/m/n/12 An event lo-ca-tion
@@ -1052,39 +994,6 @@ Overfull \hbox (20.32477pt too wide) in paragraph at lines 327--328
  []
 
 [12]
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:364: Missing $ inserted.
-<inserted text> 
-                $
-l.364   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:364: Missing $ inserted.
-<inserted text> 
-                $
-l.364   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:364: Missing $ inserted.
-<inserted text> 
-                $
-l.364   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:364: Missing $ inserted.
-<inserted text> 
-                $
-l.364   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-
 Underfull \hbox (badness 2119) in paragraph at lines 364--364
 \OT1/cmr/m/n/8 days (given: 300/day)
  []
@@ -1094,22 +1003,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 364--364
 []|\OT1/cmr/m/n/8 1:1 car-di-nal-ity with
  []
 
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:364: Missing $ inserted.
-<inserted text> 
-                $
-l.364   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
-/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.tex:364: Missing $ inserted.
-<inserted text> 
-                $
-l.364   \end{tabularx}
-                      
-I've inserted a begin-math/end-math symbol since I think
-you left one out. Proceed, with fingers crossed.
-
 
 Underfull \hbox (badness 10000) in paragraph at lines 364--364
 []|\OT1/cmr/m/n/8 1:1 car-di-nal-ity with
@@ -1121,179 +1014,214 @@ Underfull \hbox (badness 10000) in paragraph at lines 364--364
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 391--391
+Underfull \hbox (badness 1342) in paragraph at lines 395--395
+[]|\OT1/cmr/m/n/12 W (cre-ate book-
+ []
+
+
+Underfull \hbox (badness 4291) in paragraph at lines 395--395
+[]|\OT1/cmr/m/n/12 R (re-trieve new
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 395--395
+[]|\OT1/cmr/m/n/12 W (link
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 395--395
+\OT1/cmr/m/n/12 Event[]Location
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 395--395
 []|\OT1/cmr/m/n/12 W (In-stal-la-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 391--391
+Underfull \hbox (badness 10000) in paragraph at lines 395--395
 \OT1/cmr/m/n/12 tion[]Number +
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 391--391
+Underfull \hbox (badness 10000) in paragraph at lines 395--395
 []|\OT1/cmr/m/n/12 W (Book-
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 391--391
+Underfull \hbox (badness 10000) in paragraph at lines 395--395
 \OT1/cmr/m/n/12 ing[]Count +
  []
 
 [13]
-Underfull \hbox (badness 1383) in paragraph at lines 414--414
-[]|\OT1/cmr/m/n/12 R (avg book-ings
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 414--414
-\OT1/cmr/m/n/12 per lo-ca-tion:
- []
-
-
-Underfull \hbox (badness 5119) in paragraph at lines 414--414
-[]|\OT1/cmr/m/n/12 R (DEREF per
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 414--414
-\OT1/cmr/m/n/12 book-ing to get
- []
-
-
-Overfull \hbox (1.94339pt too wide) in paragraph at lines 418--426
-\OT1/cmr/bx/n/12 Operation 5 -- Event lo-ca-tions ranked by book-ing count de-scend-ing \OT1/cmr/m/n/12 (5/day) 
+Overfull \hbox (28.36905pt too wide) in paragraph at lines 398--400
+[]\OT1/cmr/bx/n/12 Please note: \OT1/cmr/m/n/12 the ac-cesses to up-date the re-dun-dant at-tributes (\OT1/cmtt/m/n/12 Installation[]Number
  []
 
 [14]
+Underfull \hbox (badness 4454) in paragraph at lines 412--412
+[]|\OT1/cmr/m/n/12 W (cre-ate lo-ca-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 412--412
+[]|\OT1/cmr/m/n/12 W (link Cus-
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 412--412
+\OT1/cmr/m/n/12 tomer $\OMS/cmsy/m/n/12 !$
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+\OT1/cmr/m/n/12 ta-ble scan, $\OML/cmm/m/it/12 N$\OT1/cmr/m/n/12 :
+ []
+
+
+Underfull \hbox (badness 2486) in paragraph at lines 426--426
+[]|\OT1/cmr/m/n/12 R (re-trieve each
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+[]|\OT1/cmr/m/n/12 R (tra-verse to
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 426--426
+\OT1/cmr/m/n/12 team for each
+ []
+
+
+Underfull \hbox (badness 1019) in paragraph at lines 426--426
+[]|\OT1/cmr/m/n/12 R (re-trieve team
+ []
+
+[15]
+Overfull \hbox (1.94339pt too wide) in paragraph at lines 432--440
+\OT1/cmr/bx/n/12 Operation 5 -- Event lo-ca-tions ranked by book-ing count de-scend-ing \OT1/cmr/m/n/12 (5/day) 
+ []
+
 LaTeX Font Info:    Font shape `OT1/cmtt/bx/n' in size <12> not available
-(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 433.
- [15]
-Underfull \hbox (badness 10000) in paragraph at lines 492--492
+(Font)              Font shape `OT1/cmtt/m/n' tried instead on input line 447.
+
+Underfull \hbox (badness 10000) in paragraph at lines 457--457
+[]|\OT1/cmr/m/n/12 R (tra-verse all
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 457--457
+\OT1/cmr/m/n/12 book-ings per
+ []
+
+[16]
+Underfull \hbox (badness 10000) in paragraph at lines 506--506
 []|\OT1/cmtt/m/n/12 Event[]Location($[]$, Street, House[]Number, Postal[]Code, City,
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 492--492
-[]| \OT1/cmtt/m/n/12 Setup[]Time[]Estimate, Equipment[]Capacity, Booking[]Count*,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 492--492
-[]|\OT1/cmtt/m/n/12 CentralOffice($[]$, Name, Address, City, Province,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 492--492
+Underfull \hbox (badness 10000) in paragraph at lines 506--506
 []|\OT1/cmtt/m/n/12 Depot($[]$, Name, Address, City, Province, Number[]Of[]Employees,
  []
 
-
-Overfull \hbox (30.46115pt too wide) in paragraph at lines 500--502
-[]\OT1/cmr/bx/n/12 COVERS (De-pot $\OMS/cmsy/m/n/12 !$ \OT1/cmr/bx/n/12 Mu-nic-i-pal-ity, 1:N)\OT1/cmr/m/n/12 : FK \OT1/cmtt/m/n/12 Depot[]ID \OT1/cmr/m/n/12 added to \OT1/cmtt/m/n/12 Municipality\OT1/cmr/m/n/12 . 
- []
-
-[16]
-Overfull \hbox (8.20726pt too wide) in paragraph at lines 508--510
-[]\OT1/cmr/bx/n/12 BL (Event[]Location $\OMS/cmsy/m/n/12 !$ \OT1/cmr/bx/n/12 Book-ing, 1:N)\OT1/cmr/m/n/12 : FK \OT1/cmtt/m/n/12 Location[]ID \OT1/cmr/m/n/12 added to \OT1/cmtt/m/n/12 Booking\OT1/cmr/m/n/12 . 
- []
-
-<images/logic_model_uml.png, id=302, 1647.15375pt x 924.45375pt>
+[17]
+<images/logic_model_uml.png, id=299, 1516.66624pt x 824.07875pt>
 File: images/logic_model_uml.png Graphic file (type png)
 <use images/logic_model_uml.png>
-Package pdftex.def Info: images/logic_model_uml.png  used on input line 517.
-(pdftex.def)             Requested size: 424.06033pt x 237.9966pt.
-[17 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/logic_model_uml.png>] [18] [19] [20] [21] [22] [23] [24]
-<images/OldManNOIndex.png, id=620, 1147.28625pt x 197.98969pt>
+Package pdftex.def Info: images/logic_model_uml.png  used on input line 516.
+(pdftex.def)             Requested size: 424.06033pt x 230.41354pt.
+ [18 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/logic_model_uml.png>] [19] [20] [21] [22] [23] [24] [25]
+<images/OldManNOIndex.png, id=613, 1147.28625pt x 197.98969pt>
 File: images/OldManNOIndex.png Graphic file (type png)
 <use images/OldManNOIndex.png>
-Package pdftex.def Info: images/OldManNOIndex.png  used on input line 880.
+Package pdftex.def Info: images/OldManNOIndex.png  used on input line 866.
 (pdftex.def)             Requested size: 424.06033pt x 73.1795pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 877--882
+Underfull \hbox (badness 10000) in paragraph at lines 863--868
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 884--885
+Underfull \hbox (badness 10000) in paragraph at lines 870--871
 
  []
 
-<images/OldManWithIndex.png, id=621, 1148.03906pt x 223.58531pt>
+<images/OldManWithIndex.png, id=614, 1148.03906pt x 223.58531pt>
 File: images/OldManWithIndex.png Graphic file (type png)
 <use images/OldManWithIndex.png>
-Package pdftex.def Info: images/OldManWithIndex.png  used on input line 892.
+Package pdftex.def Info: images/OldManWithIndex.png  used on input line 878.
 (pdftex.def)             Requested size: 424.06033pt x 82.58537pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 889--894
+Underfull \hbox (badness 10000) in paragraph at lines 875--880
 
  []
 
-[25 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/OldManNOIndex.png>]
-<images/ExPlan4.png, id=637, 635.37375pt x 502.87875pt>
+[26 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/OldManNOIndex.png>]
+<images/ExPlan4.png, id=630, 635.37375pt x 502.87875pt>
 File: images/ExPlan4.png Graphic file (type png)
 <use images/ExPlan4.png>
-Package pdftex.def Info: images/ExPlan4.png  used on input line 909.
+Package pdftex.def Info: images/ExPlan4.png  used on input line 895.
 (pdftex.def)             Requested size: 424.06033pt x 335.64557pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 906--911
+Underfull \hbox (badness 10000) in paragraph at lines 892--897
 
  []
 
-[26 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/OldManWithIndex.png>]
-<images/ExPlan5.png, id=645, 435.87843pt x 320.69812pt>
+[27 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/OldManWithIndex.png>]
+<images/ExPlan5.png, id=638, 435.87843pt x 320.69812pt>
 File: images/ExPlan5.png Graphic file (type png)
 <use images/ExPlan5.png>
-Package pdftex.def Info: images/ExPlan5.png  used on input line 915.
+Package pdftex.def Info: images/ExPlan5.png  used on input line 901.
 (pdftex.def)             Requested size: 424.06033pt x 312.00165pt.
- [27 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/ExPlan4.png>]
-Underfull \hbox (badness 3514) in paragraph at lines 928--928
+ [28 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/ExPlan4.png>]
+Underfull \hbox (badness 3514) in paragraph at lines 914--914
 []|\OT1/cmr/m/n/12 Full ta-ble scan on Book-ing
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 928--928
+Underfull \hbox (badness 10000) in paragraph at lines 914--914
 []|\OT1/cmr/m/n/12 Scan Event[]Location only
  []
 
-[28 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/ExPlan5.png>]
-Overfull \hbox (18.60333pt too wide) in paragraph at lines 944--946
+[29 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/ExPlan5.png>]
+Overfull \hbox (18.60333pt too wide) in paragraph at lines 930--932
 []\OT1/cmr/bx/n/12 Backend\OT1/cmr/m/n/12 : \OT1/cmtt/m/n/12 app.py \OT1/cmr/m/n/12 -- Flask routes call-ing Or-a-cle stored pro-ce-dures via \OT1/cmtt/m/n/12 callproc()
  []
 
-[29] [30] [31]
-<images/HomePage.png, id=769, 1431.09656pt x 272.51813pt>
+[30] [31] [32]
+<images/HomePage.png, id=762, 1431.09656pt x 272.51813pt>
 File: images/HomePage.png Graphic file (type png)
 <use images/HomePage.png>
-Package pdftex.def Info: images/HomePage.png  used on input line 1070.
+Package pdftex.def Info: images/HomePage.png  used on input line 1056.
 (pdftex.def)             Requested size: 360.45386pt x 68.64082pt.
-<images/Op1.png, id=770, 1440.88312pt x 552.56438pt>
+<images/Op1.png, id=763, 1440.88312pt x 552.56438pt>
 File: images/Op1.png Graphic file (type png)
 <use images/Op1.png>
-Package pdftex.def Info: images/Op1.png  used on input line 1076.
+Package pdftex.def Info: images/Op1.png  used on input line 1062.
 (pdftex.def)             Requested size: 360.45386pt x 138.22507pt.
-<images/Op2.png, id=771, 1431.09656pt x 599.23875pt>
+<images/Op2.png, id=764, 1431.09656pt x 599.23875pt>
 File: images/Op2.png Graphic file (type png)
 <use images/Op2.png>
-Package pdftex.def Info: images/Op2.png  used on input line 1082.
+Package pdftex.def Info: images/Op2.png  used on input line 1068.
 (pdftex.def)             Requested size: 360.45386pt x 150.93398pt.
-<images/Op3.png, id=772, 1434.86063pt x 356.0803pt>
+<images/Op3.png, id=765, 1434.86063pt x 356.0803pt>
 File: images/Op3.png Graphic file (type png)
 <use images/Op3.png>
-Package pdftex.def Info: images/Op3.png  used on input line 1088.
+Package pdftex.def Info: images/Op3.png  used on input line 1074.
 (pdftex.def)             Requested size: 360.45386pt x 89.44908pt.
- [32 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/HomePage.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op1.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op2.png>]
-<images/Op4.png, id=783, 1438.6247pt x 418.56375pt>
+ [33 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/HomePage.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op1.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op2.png>]
+<images/Op4.png, id=776, 1438.6247pt x 418.56375pt>
 File: images/Op4.png Graphic file (type png)
 <use images/Op4.png>
-Package pdftex.def Info: images/Op4.png  used on input line 1094.
+Package pdftex.def Info: images/Op4.png  used on input line 1080.
 (pdftex.def)             Requested size: 360.45386pt x 104.87059pt.
-<images/Op5.png, id=784, 1425.07407pt x 703.87968pt>
+<images/Op5.png, id=777, 1425.07407pt x 703.87968pt>
 File: images/Op5.png Graphic file (type png)
 <use images/Op5.png>
-Package pdftex.def Info: images/Op5.png  used on input line 1100.
+Package pdftex.def Info: images/Op5.png  used on input line 1086.
 (pdftex.def)             Requested size: 360.45386pt x 178.03163pt.
- [33 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op3.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op4.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op5.png>] (/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.aux)
+ [34 </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op3.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op4.png> </Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/images/Op5.png>] (/Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -1302,18 +1230,18 @@ Package rerunfilecheck Info: File `stageup.out' has not changed.
 (rerunfilecheck)             Checksum: 0BEDD01835A18228E601B13334379A91;5740.
  ) 
 Here is how much of TeX's memory you used:
- 28324 strings out of 469006
- 510511 string characters out of 5454813
+ 28317 strings out of 469006
+ 510466 string characters out of 5454813
  1328299 words of memory out of 5000000
  56056 multiletter control sequences out of 15000+600000
  640923 words of font info for 87 fonts, out of 8000000 for 9000
  319 hyphenation exceptions out of 8191
  90i,13n,94p,621b,2291s stack positions out of 10000i,1000n,20000p,200000b,200000s
- </Users/flaviovalerio/Library/texlive/2026basic/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
-Output written on /Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.pdf (34 pages, 809522 bytes).
+ </Users/flaviovalerio/Library/texlive/2026basic/texmf-var/fonts/pk/ljfour/jknappen/ec/tcrm1200.600pk></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmbx8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr17.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti12.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmti8.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt10.pfb></usr/local/texlive/2026basic/texmf-dist/fonts/type1/public/amsfonts/cm/cmtt12.pfb>
+Output written on /Users/flaviovalerio/Desktop/Università/Database/progetto/DBSystems/Exam/Documentation/stageup.pdf (35 pages, 778629 bytes).
 PDF statistics:
- 965 PDF objects out of 1000 (max. 8388607)
- 863 compressed objects within 9 object streams
- 496 named destinations out of 1000 (max. 500000)
+ 949 PDF objects out of 1000 (max. 8388607)
+ 850 compressed objects within 9 object streams
+ 489 named destinations out of 1000 (max. 500000)
  350 words of extra memory for PDF output out of 10000 (max. 10000000)
 
