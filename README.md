@@ -24,22 +24,7 @@ The project is divided into two main engineering phases:
 - **Redundancy Analysis:** Implementation of derived attributes (e.g., `Booking_Count` on Event Locations) with mathematical justification of I/O performance gains during reporting queries.
 - **Logical Schema:** Final Object-Relational database design represented in UML.
 
-## 📂 Repository Structure
-
-\`\`\`text
-├── docs/                   # LaTeX source files and documentation
-│   ├── main.tex            # Main LaTeX document
-│   └── final_report.pdf    # Final compiled PDF with all tables and E-R diagrams
-├── diagrams/               # Source files for E-R and UML models (e.g., drawio, png)
-└── README.md               # Project overview
-\`\`\`
-
 ## 🛠️ Key Engineering Choices
 During the design phase, several strategic decisions were made to optimize performance and data integrity:
 1. **Performance Tuning via Redundancy:** An active derivation rule (simulated via DB triggers) was designed to maintain a `Booking_Count` on Event Locations. This choice drops the read operations for the daily ranking report from hundreds of thousands of full table scans down to a simple $O(1)$ read per location.
 2. **Table of Accesses Method:** Cost calculations strictly adhere to physical disk I/O principles, factoring in both base accesses (Read=1) and structural updates (Write=2), explicitly handling hidden trigger costs.
-
-## 🚀 How to Compile the Documentation
-The documentation is written in LaTeX. To compile the PDF locally:
-1. Ensure you have a TeX distribution installed (e.g., TeX Live, MiKTeX).
-2. Run your preferred compiler (e.g., `pdflatex main.tex`) or open the project in Overleaf.
