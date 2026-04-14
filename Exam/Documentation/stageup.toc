@@ -1,41 +1,44 @@
 \babel@toc {english}{}\relax 
-\contentsline {section}{\numberline {1}Conceptual Design}{2}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Requirements}{2}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}Analysis}{3}{subsection.1.2}%
-\contentsline {subsubsection}{\numberline {1.2.1}Reorganisation of Concepts}{3}{subsubsection.1.2.1}%
-\contentsline {subsubsection}{\numberline {1.2.2}Glossary of Terms}{5}{subsubsection.1.2.2}%
-\contentsline {subsubsection}{\numberline {1.2.3}Ambiguity Resolutions}{5}{subsubsection.1.2.3}%
-\contentsline {subsubsection}{\numberline {1.2.4}Design Choice: Central Office Entity}{6}{subsubsection.1.2.4}%
-\contentsline {subsubsection}{\numberline {1.2.5}Entity-Relationship Diagram}{7}{subsubsection.1.2.5}%
-\contentsline {paragraph}{SKELETON SCHEMA}{7}{section*.11}%
-\contentsline {paragraph}{FINAL SCHEMA}{8}{section*.13}%
-\contentsline {subsubsection}{\numberline {1.2.6}Entities and Attributes}{9}{subsubsection.1.2.6}%
-\contentsline {subsubsection}{\numberline {1.2.7}Relationships}{11}{subsubsection.1.2.7}%
-\contentsline {subsubsection}{\numberline {1.2.8}Business Rules (not expressible in the ER diagram)}{12}{subsubsection.1.2.8}%
-\contentsline {section}{\numberline {2}Logical Design}{13}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Volume Table}{13}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Access Table}{13}{subsection.2.2}%
-\contentsline {subsection}{\numberline {2.3}Redundancy Analysis}{16}{subsection.2.3}%
-\contentsline {subsubsection}{\numberline {2.3.1}\texttt {Booking\_Count} on Event\_Location (for Operation 5)}{16}{subsubsection.2.3.1}%
-\contentsline {subsubsection}{\numberline {2.3.2}\texttt {Installation\_Number} on Team}{17}{subsubsection.2.3.2}%
-\contentsline {subsection}{\numberline {2.4}Relational Schema (logical model)}{17}{subsection.2.4}%
-\contentsline {subsection}{\numberline {2.5}UML Class Diagram}{18}{subsection.2.5}%
-\contentsline {section}{\numberline {3}Implementation}{19}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Object Types}{19}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Tables}{20}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Stored Procedures}{22}{subsection.3.3}%
-\contentsline {subsection}{\numberline {3.4}Triggers}{24}{subsection.3.4}%
-\contentsline {section}{\numberline {4}Physical Design}{26}{section.4}%
-\contentsline {subsection}{\numberline {4.1}Index Analysis}{26}{subsection.4.1}%
-\contentsline {subsubsection}{\numberline {4.1.1}Operation 4 -- View Teams at a Specific Event Location (20/day)}{26}{subsubsection.4.1.1}%
-\contentsline {paragraph}{Without index}{26}{section*.26}%
-\contentsline {paragraph}{Index creation}{26}{section*.28}%
-\contentsline {paragraph}{With index}{26}{section*.29}%
-\contentsline {subsubsection}{\numberline {4.1.2}Operation 5 -- Ranked Locations (5/day)}{27}{subsubsection.4.1.2}%
-\contentsline {paragraph}{Explain Plans}{27}{section*.31}%
-\contentsline {subsection}{\numberline {4.2}Performance Summary}{29}{subsection.4.2}%
-\contentsline {section}{\numberline {5}Web Interface}{30}{section.5}%
-\contentsline {subsection}{\numberline {5.1}Architecture}{30}{subsection.5.1}%
-\contentsline {subsection}{\numberline {5.2}Routes}{30}{subsection.5.2}%
-\contentsline {subsection}{\numberline {5.3}Backend Code}{30}{subsection.5.3}%
-\contentsline {subsection}{\numberline {5.4}Frontend Screenshots}{33}{subsection.5.4}%
+\contentsline {section}{\numberline {1}Conceptual Design}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Requirements}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Analysis}{4}{subsection.1.2}%
+\contentsline {subsubsection}{\numberline {1.2.1}Reorganisation of Concepts}{4}{subsubsection.1.2.1}%
+\contentsline {subsubsection}{\numberline {1.2.2}Glossary of Terms}{6}{subsubsection.1.2.2}%
+\contentsline {subsubsection}{\numberline {1.2.3}Ambiguity Resolutions}{6}{subsubsection.1.2.3}%
+\contentsline {subsubsection}{\numberline {1.2.4}Design Choice: Central Office Entity}{7}{subsubsection.1.2.4}%
+\contentsline {subsubsection}{\numberline {1.2.5}Entity-Relationship Diagram}{8}{subsubsection.1.2.5}%
+\contentsline {paragraph}{SKELETON SCHEMA}{8}{section*.11}%
+\contentsline {paragraph}{FINAL SCHEMA}{9}{section*.13}%
+\contentsline {subsubsection}{\numberline {1.2.6}Entities and Attributes}{10}{subsubsection.1.2.6}%
+\contentsline {subsubsection}{\numberline {1.2.7}Relationships}{12}{subsubsection.1.2.7}%
+\contentsline {subsubsection}{\numberline {1.2.8}Business Rules (not expressible in the ER diagram)}{13}{subsubsection.1.2.8}%
+\contentsline {section}{\numberline {2}Logical Design}{14}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Volume Table}{14}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Access Table}{14}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Redundancy Analysis}{17}{subsection.2.3}%
+\contentsline {subsubsection}{\numberline {2.3.1}\texttt {Booking\_Count} on Event\_Location (for Operation 5)}{17}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\numberline {2.3.2}\texttt {Installation\_Number} on Team}{18}{subsubsection.2.3.2}%
+\contentsline {subsection}{\numberline {2.4}Relational Schema (logical model)}{18}{subsection.2.4}%
+\contentsline {subsection}{\numberline {2.5}UML Class Diagram}{19}{subsection.2.5}%
+\contentsline {subsection}{\numberline {2.6}Design Choices for Collections}{19}{subsection.2.6}%
+\contentsline {subsubsection}{\numberline {2.6.1}Member -- Standalone Table (not VARRAY)}{19}{subsubsection.2.6.1}%
+\contentsline {subsubsection}{\numberline {2.6.2}Municipality -- Nested Table inside Depot}{20}{subsubsection.2.6.2}%
+\contentsline {section}{\numberline {3}Implementation}{21}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Object Types}{21}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Tables}{23}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Stored Procedures}{25}{subsection.3.3}%
+\contentsline {subsection}{\numberline {3.4}Triggers}{27}{subsection.3.4}%
+\contentsline {section}{\numberline {4}Physical Design}{29}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Index Analysis}{29}{subsection.4.1}%
+\contentsline {subsubsection}{\numberline {4.1.1}Operation 4 -- View Teams at a Specific Event Location (20/day)}{29}{subsubsection.4.1.1}%
+\contentsline {paragraph}{Without index}{29}{section*.26}%
+\contentsline {paragraph}{Index creation}{29}{section*.28}%
+\contentsline {paragraph}{With index}{29}{section*.29}%
+\contentsline {subsubsection}{\numberline {4.1.2}Operation 5 -- Ranked Locations (5/day)}{30}{subsubsection.4.1.2}%
+\contentsline {paragraph}{Explain Plans}{30}{section*.31}%
+\contentsline {subsection}{\numberline {4.2}Performance Summary}{32}{subsection.4.2}%
+\contentsline {section}{\numberline {5}Web Interface}{33}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Architecture}{33}{subsection.5.1}%
+\contentsline {subsection}{\numberline {5.2}Routes}{33}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Backend Code}{33}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Frontend Screenshots}{36}{subsection.5.4}%

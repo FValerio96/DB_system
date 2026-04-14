@@ -10,9 +10,9 @@ BEGIN
     BEGIN EXECUTE IMMEDIATE 'DROP TYPE MemberTY         FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TYPE TeamTY           FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TYPE MunicipalityTY   FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
+    BEGIN EXECUTE IMMEDIATE 'DROP TYPE Municipality_NT  FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TYPE CustomerTY       FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TYPE DepotTY          FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP TYPE OfficeTY         FORCE'; EXCEPTION WHEN OTHERS THEN NULL; END;
 END;
 /
 
@@ -22,28 +22,31 @@ BEGIN
     BEGIN EXECUTE IMMEDIATE 'DROP TABLE Event_Location  CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TABLE Member          CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TABLE Team            CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP TABLE Municipality    CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TABLE Depot           CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
-    BEGIN EXECUTE IMMEDIATE 'DROP TABLE CentralOffice   CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
     BEGIN EXECUTE IMMEDIATE 'DROP TABLE Customer        CASCADE CONSTRAINTS'; EXCEPTION WHEN OTHERS THEN NULL; END;
 END;
 /
 
 CREATE OR REPLACE PROCEDURE CreateTypes AUTHID CURRENT_USER IS
 BEGIN
-    -- Supertype shared by CentralOffice and Depot (generalisation)
-    EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE OfficeTY AS OBJECT (
+    -- Municipality: element type for nested table (weak entity, no REF needed)
+    EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE MunicipalityTY AS OBJECT (
+        ID   VARCHAR2(20),
+        Name VARCHAR2(100)
+    )';
+    -- Unbounded nested table type for municipalities
+    EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE Municipality_NT AS TABLE OF MunicipalityTY';
+
+    -- Depot: embeds municipalities as a nested table
+    EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE DepotTY AS OBJECT (
         ID                  VARCHAR2(20),
         Name                VARCHAR2(100),
         Address             VARCHAR2(200),
         City                VARCHAR2(100),
         Province            VARCHAR2(100),
-        Number_Of_Employees INTEGER
-    ) NOT FINAL';
-
-    -- Depot extends Office with a geographic Region attribute
-    EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE DepotTY UNDER OfficeTY (
-        Region VARCHAR2(100)
+        Number_Of_Employees INTEGER,
+        Region              VARCHAR2(100),
+        Municipalities      Municipality_NT
     )';
 
     EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE CustomerTY AS OBJECT (
@@ -53,12 +56,6 @@ BEGIN
         Email   VARCHAR2(100),
         Phone   VARCHAR2(20),
         Address VARCHAR2(200)
-    )';
-
-    EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE MunicipalityTY AS OBJECT (
-        ID    VARCHAR2(20),
-        Name  VARCHAR2(100),
-        Depot REF DepotTY
     )';
 
     EXECUTE IMMEDIATE 'CREATE OR REPLACE TYPE TeamTY AS OBJECT (
@@ -108,15 +105,7 @@ END;
 
 CREATE OR REPLACE PROCEDURE CreateTables AUTHID CURRENT_USER IS
 BEGIN
-    -- Central Office: single-row table (OF supertype OfficeTY)
-    EXECUTE IMMEDIATE 'CREATE TABLE CentralOffice OF OfficeTY (
-        ID   PRIMARY KEY,
-        Name NOT NULL,
-        Number_Of_Employees NOT NULL,
-        CONSTRAINT chk_co_employees CHECK (Number_Of_Employees >= 0)
-    )';
-
-    -- Depot: OF DepotTY (extends OfficeTY)
+    -- Depot: municipalities embedded as nested table (weak entity)
     EXECUTE IMMEDIATE 'CREATE TABLE Depot OF DepotTY (
         ID   PRIMARY KEY,
         Name NOT NULL,
@@ -124,15 +113,9 @@ BEGIN
         Address NOT NULL,
         Number_Of_Employees NOT NULL,
         CONSTRAINT chk_depot_employees CHECK (Number_Of_Employees >= 0)
-    )';
+    ) NESTED TABLE Municipalities STORE AS Municipality_Store';
 
-    EXECUTE IMMEDIATE 'CREATE TABLE Municipality OF MunicipalityTY (
-        ID   PRIMARY KEY,
-        Name NOT NULL UNIQUE,
-        Depot NOT NULL REFERENCES Depot ON DELETE CASCADE
-    )';
-
-    -- Team belongs to exactly one Depot (1:N relationship BELONGS_TO)
+    -- Team: each team belongs to exactly one Depot (1:N BELONGS_TO)
     EXECUTE IMMEDIATE 'CREATE TABLE Team OF TeamTY (
         Code PRIMARY KEY,
         Name NOT NULL,
@@ -211,13 +194,7 @@ CREATE OR REPLACE PROCEDURE PopulateDatabase(
     p_num_bookings  IN NUMBER
 ) IS
 BEGIN
-    -- Insert Central Office (one row)
-    INSERT INTO CentralOffice VALUES (
-        OfficeTY('CO1', 'StageUp HQ', 'Corso Vittorio Emanuele 10',
-                 'Milano', 'MI', 150)
-    );
-
-    -- Insert 10 Depots
+    -- Insert 10 Depots with empty nested table (municipalities added below)
     FOR i IN 1..10 LOOP
         INSERT INTO Depot VALUES (
             DepotTY(
@@ -227,37 +204,34 @@ BEGIN
                 'City' || TO_CHAR(i),
                 'Province' || TO_CHAR(i),
                 ROUND(DBMS_RANDOM.VALUE(10, 80)),
-                'Region' || TO_CHAR(CEIL(i / 2))
+                'Region' || TO_CHAR(CEIL(i / 2)),
+                Municipality_NT()   -- initialised empty
             )
         );
     END LOOP;
 
-    -- Insert 10 Municipalities per Depot (100 total)
+    -- Insert 10 Municipalities per Depot into the nested table (100 total)
     FOR depot_id IN 1..10 LOOP
         FOR i IN 1..10 LOOP
-            INSERT INTO Municipality VALUES (
-                MunicipalityTY(
-                    'Mun' || TO_CHAR((depot_id - 1) * 10 + i),
-                    'Municipality' || TO_CHAR((depot_id - 1) * 10 + i),
-                    (SELECT REF(d) FROM Depot d WHERE d.ID = 'Depot' || TO_CHAR(depot_id))
-                )
-            );
+            INSERT INTO TABLE(
+                SELECT d.Municipalities FROM Depot d
+                 WHERE d.ID = 'Depot' || TO_CHAR(depot_id)
+            ) VALUES (MunicipalityTY(
+                'Mun' || TO_CHAR((depot_id - 1) * 10 + i),
+                'Municipality' || TO_CHAR((depot_id - 1) * 10 + i)
+            ));
         END LOOP;
     END LOOP;
 
-    -- Insert 10 Teams per Depot (100 total), max 10 members each
-    FOR depot_id IN 1..10 LOOP
-        FOR i IN 1..10 LOOP
-            INSERT INTO Team VALUES (
-                TeamTY(
-                    'Team' || TO_CHAR((depot_id - 1) * 10 + i),
-                    'TeamName' || TO_CHAR((depot_id - 1) * 10 + i),
-                    10,
-                    0,
-                    (SELECT REF(d) FROM Depot d WHERE d.ID = 'Depot' || TO_CHAR(depot_id))
-                )
-            );
-        END LOOP;
+    -- Insert 100 Teams (10 per Depot, 1:N BELONGS_TO)
+    FOR i IN 1..100 LOOP
+        INSERT INTO Team VALUES (TeamTY(
+            'Team'     || TO_CHAR(i),
+            'TeamName' || TO_CHAR(i),
+            10,
+            0,
+            (SELECT REF(d) FROM Depot d WHERE d.ID = 'Depot' || TO_CHAR(CEIL(i / 10)))
+        ));
     END LOOP;
 
     -- Insert 7 Members per Team (700 total)
@@ -558,13 +532,11 @@ SET SERVEROUTPUT ON
 
 -- Web application seed data
 INSERT INTO Depot VALUES (
-    DepotTY('DepotWeb', 'StageUp Web Depot', 'Via Web 1', 'Bari', 'BA', 20, 'Puglia')
+    DepotTY('DepotWeb', 'StageUp Web Depot', 'Via Web 1', 'Bari', 'BA', 20, 'Puglia', Municipality_NT())
 );
 
-INSERT INTO Team VALUES (
-    TeamTY('TeamWeb', 'Web Setup Crew', 10, 0,
-           (SELECT REF(d) FROM Depot d WHERE d.ID = 'DepotWeb'))
-);
+INSERT INTO Team VALUES (TeamTY('TeamWeb', 'Web Setup Crew', 10, 0,
+    (SELECT REF(d) FROM Depot d WHERE d.ID = 'DepotWeb')));
 
 INSERT INTO Customer VALUES (
     CustomerTY('CustWeb', 'Web Customer', 'Company', 'web@stageup.com', '3331234567', 'Via Web 1, Bari')
@@ -584,10 +556,8 @@ INSERT INTO Event_Location VALUES (
 -- ============================================================
 
 -- Test Trigger 1: Exceed team member capacity (TeamSmall max=2)
-INSERT INTO Team VALUES (
-    TeamTY('TeamSmall', 'Small Team', 2, 0,
-           (SELECT REF(d) FROM Depot d WHERE d.ID = 'Depot1'))
-);
+INSERT INTO Team VALUES (TeamTY('TeamSmall', 'Small Team', 2, 0,
+    (SELECT REF(d) FROM Depot d WHERE d.ID = 'Depot1')));
 
 INSERT INTO Member VALUES (MemberTY('MB_S1','Alice','Rossi','3331111111','alice@test.com',
     (SELECT REF(t) FROM Team t WHERE t.Code = 'TeamSmall')));

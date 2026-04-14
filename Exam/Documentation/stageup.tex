@@ -501,10 +501,10 @@ Since even a single query per day ($q = 1$) incurs $100{,}000$ reads against a m
   \texttt{\quad Contract\_Type, Team\_Code, Customer\_ID, Location\_ID)} \\ \hline
   \texttt{\textbf{Team}(\underline{Code}, Name, Max\_Members, Installation\_Number*, Depot\_ID)} \\ \hline
   \texttt{\textbf{Member}(\underline{ID}, Name, Surname, Phone, Email, Team\_Code)} \\ \hline
-  \texttt{\textbf{Depot}(\underline{ID}, Name, Address, City, Province, Number\_Of\_Employees, Region)} \\ \hline
-  \texttt{\textbf{Municipality}(\underline{ID}, Name, Depot\_ID)} \\ \hline
+  \texttt{\textbf{Depot}(\underline{ID}, Name, Address, City, Province, Number\_Of\_Employees, Region,}\\
+  \texttt{\quad Municipalities: \{(\underline{ID}, Name)\})} \\ \hline
   \end{tabularx}
-  \caption{Relational Schema (* = redundant derived attribute)}
+  \caption{Relational Schema (* = redundant derived attribute; \{\} = nested collection embedded in parent)}
 \end{table}
 
 \pagebreak
@@ -517,35 +517,74 @@ Since even a single query per day ($q = 1$) incurs $100{,}000$ reads against a m
   \caption{UML Class Diagram -- Object-Relational Logical Schema, analysis phase (exported from \texttt{Draw/logic\_model\_uml.drawio})}
 \end{figure}
 
+\subsection{Design Choices for Collections}
+
+\subsubsection{Member -- Standalone Table (not VARRAY)}
+
+Members could in principle be modelled as a \texttt{VARRAY} of \texttt{MemberTY} inside \texttt{TeamTY},
+with a fixed size of 10 reflecting the maximum stated in the assumed value for the volume table in the second exercise.
+This would make the capacity constraint self-enforcing at the storage level,
+eliminating the need for a dedicated trigger.
+
+However, this approach was intentionally rejected for the following reason:
+\texttt{Team.Max\_Members} is a \emph{per-team attribute} that may vary across teams
+(e.g.\ a team could have a maximum of 3, 5, or 8 members rather than always 10).
+A \texttt{VARRAY(10)} would enforce only the global upper bound of the volume table,
+not the declared per-team limit.
+To correctly enforce \texttt{BR5}\\ ($|\text{members}| \leq \texttt{Max\_Members}$), an application-level
+trigger is required regardless.
+Keeping \texttt{Member} as a standalone \texttt{OF TABLE} also preserves full relational
+queryability (e.g.\ finding all members of a team, or all teams a member belongs to)
+without resorting to the \texttt{TABLE()} unnesting operator.
+
+\subsubsection{Municipality -- Nested Table inside Depot}
+
+\texttt{Municipality} is a \emph{weak entity}: it has no meaningful existence outside
+its parent \texttt{Depot} (cardinality \texttt{(1,1)} on the municipality side of \texttt{COVERS}).
+This makes it a natural candidate for embedding as a collection inside \texttt{DepotTY}.
+
+A \texttt{NESTED TABLE} of \texttt{MunicipalityTY} is chosen over a \texttt{VARRAY} because
+the number of municipalities per depot is unbounded in principle (the volume table gives
+10 as an average, not a hard maximum), and nested tables support unbounded cardinality.
+The nested table is physically stored in a separate Oracle store table
+(\texttt{Municipality\_Store}) but is logically part of \texttt{Depot},
+reflecting the semantic dependency correctly.
+
+This choice eliminates the standalone \texttt{Municipality} table and the \texttt{REF DepotTY}
+foreign reference that would otherwise appear in \texttt{MunicipalityTY}.
+None of the five defined operations access municipalities directly,
+so the restructuring has no impact on query performance or procedure logic.
+
 \newpage
 % ============================================================================
 \section{Implementation}\label{sec:implementation}
 % ============================================================================
 
-The database is implemented on \textbf{Oracle Database} using the \textbf{Object-Relational} model.
-Each entity is defined as an Oracle \texttt{OBJECT TYPE} and stored in an \texttt{OF TABLE}.
-Inter-entity references use \texttt{REF} attributes.
-
-The generalisation \textit{Office} $\to$ \{\textit{CentralOffice}, \textit{Depot}\} is realised with
-Oracle's \textbf{type inheritance}: \texttt{OfficeTY} is declared \texttt{NOT FINAL}; \texttt{DepotTY}
-extends it with \texttt{UNDER} and adds the \texttt{Region} attribute.
+This section details the physical design of the system, implementing the structures defined in the logical schema. The database is developed on \textbf{Oracle Database} utilizing the \textbf{Object-Relational} model. Each entity is structured as an Oracle \texttt{OBJECT TYPE} and persisted within an \texttt{OF TABLE}. Inter-entity relationships are established using \texttt{REF} attributes to optimize object navigation.
 
 \subsection{Object Types}
 
+The object types representing the primary entities of the information system are defined first. For weak entities, such as Municipalities, a nested table approach is adopted, as they do not require independent references. Robust entities are defined as standard objects with their respective attributes. Redundant attributes (e.g., \texttt{Installation\_Number} and \texttt{Booking\_Count}), identified during the performance analysis to optimize read-heavy operations, are also included.
+
 \begin{lstlisting}
--- Supertype: shared attributes of CentralOffice and Depot
-CREATE OR REPLACE TYPE OfficeTY AS OBJECT (
+-- Municipality: element type for nested table (weak entity, no REF needed)
+CREATE OR REPLACE TYPE MunicipalityTY AS OBJECT (
+    ID   VARCHAR2(20),
+    Name VARCHAR2(100)
+);
+-- Nested table type: unbounded collection of municipalities
+CREATE OR REPLACE TYPE Municipality_NT AS TABLE OF MunicipalityTY;
+
+-- Depot: embeds its municipalities as a nested table
+CREATE OR REPLACE TYPE DepotTY AS OBJECT (
     ID                  VARCHAR2(20),
     Name                VARCHAR2(100),
     Address             VARCHAR2(200),
     City                VARCHAR2(100),
     Province            VARCHAR2(100),
-    Number_Of_Employees INTEGER
-) NOT FINAL;
-
--- Depot specialisation: adds Region
-CREATE OR REPLACE TYPE DepotTY UNDER OfficeTY (
-    Region VARCHAR2(100)
+    Number_Of_Employees INTEGER,
+    Region              VARCHAR2(100),
+    Municipalities      Municipality_NT
 );
 
 CREATE OR REPLACE TYPE CustomerTY AS OBJECT (
@@ -555,12 +594,6 @@ CREATE OR REPLACE TYPE CustomerTY AS OBJECT (
     Email   VARCHAR2(100),
     Phone   VARCHAR2(20),
     Address VARCHAR2(200)
-);
-
-CREATE OR REPLACE TYPE MunicipalityTY AS OBJECT (
-    ID    VARCHAR2(20),
-    Name  VARCHAR2(100),
-    Depot REF DepotTY
 );
 
 -- Team belongs to exactly one Depot (1:N BELONGS_TO)
@@ -610,16 +643,14 @@ CREATE OR REPLACE TYPE BookingTY AS OBJECT (
 
 \subsection{Tables}
 
-\begin{lstlisting}
--- CentralOffice: OF supertype OfficeTY (no extra attributes)
-CREATE TABLE CentralOffice OF OfficeTY (
-    ID   PRIMARY KEY,
-    Name NOT NULL,
-    Number_Of_Employees NOT NULL,
-    CONSTRAINT chk_co_employees CHECK (Number_Of_Employees >= 0)
-);
+Following the object types definition, the corresponding typed tables are created for physical data storage. Data integrity is enforced through \texttt{PRIMARY KEY} constraints, \texttt{NOT NULL} clauses, and specific \texttt{CHECK} constraints restricting values to predefined domains. 
 
--- Depot: OF subtype DepotTY
+A critical design choice involves the referential integrity strategy, which prioritizes the preservation of historical audit trails over automated physical deletion. Destructive \texttt{ON DELETE CASCADE} policies are strictly avoided for robust entities. Specifically, the \texttt{Team} and \texttt{Depot} relationship utilizes the default \texttt{RESTRICT} behavior; this prevents the physical deletion of a depot or team if they are associated with historical bookings, enforcing a logical (soft) deletion approach at the application level to preserve service history. 
+
+For entities that can be safely detached, the \texttt{ON DELETE SET NULL} clause is applied. This is used in the \texttt{Member} table to ensure that if a team is conceptually dissolved, its employees are merely unassigned rather than deleted. Similarly, the \texttt{Event\_Location} table utilizes \texttt{ON DELETE SET NULL} for its associated \texttt{Customer}, reflecting the business reality that a physical location persists and can be booked by other clients even if the original registering customer is removed. Conversely, the strict physical deletion of \texttt{Municipalities} tied to a \texttt{Depot} is handled natively and automatically by Oracle's nested table architecture without requiring explicit cascade commands.
+
+\begin{lstlisting}
+-- Depot: municipalities embedded as nested table (weak entity)
 CREATE TABLE Depot OF DepotTY (
     ID   PRIMARY KEY,
     Name NOT NULL,
@@ -627,14 +658,9 @@ CREATE TABLE Depot OF DepotTY (
     Address NOT NULL,
     Number_Of_Employees NOT NULL,
     CONSTRAINT chk_depot_employees CHECK (Number_Of_Employees >= 0)
-);
+) NESTED TABLE Municipalities STORE AS Municipality_Store;
 
-CREATE TABLE Municipality OF MunicipalityTY (
-    ID   PRIMARY KEY,
-    Name NOT NULL UNIQUE,
-    Depot NOT NULL REFERENCES Depot ON DELETE CASCADE
-);
-
+-- Team: each team belongs to exactly one Depot (1:N BELONGS_TO)
 CREATE TABLE Team OF TeamTY (
     Code PRIMARY KEY,
     Name NOT NULL,
@@ -642,14 +668,14 @@ CREATE TABLE Team OF TeamTY (
     CONSTRAINT chk_max_members CHECK (Max_Members > 0),
     Installation_Number NOT NULL,
     CONSTRAINT chk_installation CHECK (Installation_Number >= 0),
-    Depot NOT NULL REFERENCES Depot ON DELETE CASCADE
+    Depot NOT NULL REFERENCES Depot 
 );
 
 CREATE TABLE Member OF MemberTY (
     ID      PRIMARY KEY,
     Name    NOT NULL,
     Surname NOT NULL,
-    Team    NOT NULL REFERENCES Team ON DELETE CASCADE
+    Team    REFERENCES Team ON DELETE SET NULL
 );
 
 CREATE TABLE Customer OF CustomerTY (
@@ -670,7 +696,7 @@ CREATE TABLE Event_Location OF Event_LocationTY (
     CONSTRAINT chk_equip_cap CHECK (Equipment_Capacity >= 0),
     Booking_Count NOT NULL,
     CONSTRAINT chk_bk_count CHECK (Booking_Count >= 0),
-    Customer NOT NULL REFERENCES Customer ON DELETE CASCADE
+    Customer REFERENCES Customer ON DELETE SET NULL
 );
 
 CREATE TABLE Booking OF BookingTY (
@@ -693,6 +719,10 @@ CREATE TABLE Booking OF BookingTY (
 
 \subsection{Stored Procedures}
 
+To ensure business logic is handled efficiently within the database layer, stored procedures corresponding to the primary operations defined in the logical analysis are implemented. These procedures abstract the complexities of object-relational insertions and queries from the application layer. 
+\\
+The first procedure manages the registration of a new customer, encapsulating the physical insertion into the system and committing the transaction.
+\\
 \begin{lstlisting}
 -- Procedure 1: Register a new customer (Operation 1)
 CREATE OR REPLACE PROCEDURE proc_register_customer (
@@ -705,7 +735,9 @@ BEGIN
     COMMIT;
 END;
 \end{lstlisting}
-
+\\
+The second procedure orchestrates the creation of a booking. The existence of the requested Team, Customer, and Location is actively validated before generating the order to ensure referential safety.
+\\
 \begin{lstlisting}
 -- Procedure 2: Record a new booking (Operation 2)
 CREATE OR REPLACE PROCEDURE proc_add_booking (
@@ -733,7 +765,9 @@ END;
 -- Note: triggers trg_update_installation_count and trg_update_booking_count
 --       fire automatically after the INSERT.
 \end{lstlisting}
-
+\\
+When creating a new location, an associated customer is required. The third procedure handles this insertion while correctly initializing the redundant \texttt{Booking\_Count} attribute to zero.
+\\
 \begin{lstlisting}
 -- Procedure 3: Register a new event location (Operation 3)
 CREATE OR REPLACE PROCEDURE proc_register_location (
@@ -753,7 +787,9 @@ BEGIN
     COMMIT;
 END;
 \end{lstlisting}
-
+\\
+To satisfy reporting queries, the fourth procedure utilizes a \texttt{SYS\_REFCURSOR} alongside the \texttt{DEREF} operator to efficiently navigate from a Booking to its assigned Team, returning a distinct list of teams for a specific location.
+\\
 \begin{lstlisting}
 -- Procedure 4: View teams that handled a specific event location (Operation 4)
 CREATE OR REPLACE PROCEDURE proc_get_teams_at_location (
@@ -769,7 +805,9 @@ BEGIN
                                WHERE l.ID = p_location_id);
 END;
 \end{lstlisting}
-
+\\
+Finally, the fifth procedure leverages the calculated \texttt{Booking\_Count} redundancy. By pre-aggregating these values via triggers (detailed in the subsequent section), the query avoids costly real-time joins or groupings, returning a ranked list instantly.
+\\
 \begin{lstlisting}
 -- Procedure 5: Event locations ranked by booking count descending (Operation 5)
 CREATE OR REPLACE PROCEDURE proc_get_locations_ranked (
@@ -784,6 +822,10 @@ END;
 \end{lstlisting}
 
 \subsection{Triggers}
+
+To strictly enforce the business requirements (BR) derived during the analysis phase and dynamically maintain the consistency of redundant attributes, active database rules are implemented. 
+
+Before each member is inserted into a team, Trigger 1 reads the team's declared maximum capacity and the current count of its members. If the limit has been reached, the insertion is aborted, satisfying BR9 natively within the DBMS.
 
 \begin{lstlisting}
 -- Trigger 1: Enforce team member capacity (BR9)
@@ -807,8 +849,7 @@ BEGIN
 END;
 \end{lstlisting}
 
-Before each member insert, the trigger reads the team's declared maximum and the current count of its
-members. If the limit is already met, the insert is aborted (BR9).
+To maintain data consistency across performance-optimized tables, Triggers 2 and 3 operate silently upon every new booking creation. Firing \texttt{AFTER INSERT}, these triggers update the redundant counters (\texttt{Installation\_Number} on the Team and \texttt{Booking\_Count} on the Location) without any application-layer intervention, fulfilling BR10 and BR11.
 
 \begin{lstlisting}
 -- Trigger 2: Increment Installation_Number after booking insert (BR10)
@@ -833,12 +874,6 @@ BEGIN
      WHERE REF(l) = :NEW.Location;
 END;
 \end{lstlisting}
-
-Triggers 2 and 3 both fire \texttt{AFTER INSERT ON Booking}. Each updates one redundant counter,
-keeping \texttt{Installation\_Number} and \texttt{Booking\_Count} always consistent without any
-application-layer intervention.
-
-\newpage
 % ============================================================================
 \section{Physical Design}
 % ============================================================================
