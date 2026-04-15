@@ -123,14 +123,14 @@ BEGIN
         CONSTRAINT chk_max_members CHECK (Max_Members > 0),
         Installation_Number NOT NULL,
         CONSTRAINT chk_installation_number CHECK (Installation_Number >= 0),
-        Depot NOT NULL REFERENCES Depot ON DELETE CASCADE
+        Depot NOT NULL REFERENCES Depot
     )';
 
     EXECUTE IMMEDIATE 'CREATE TABLE Member OF MemberTY (
         ID      PRIMARY KEY,
         Name    NOT NULL,
         Surname NOT NULL,
-        Team    NOT NULL REFERENCES Team ON DELETE CASCADE
+        Team    REFERENCES Team ON DELETE SET NULL
     )';
 
     EXECUTE IMMEDIATE 'CREATE TABLE Customer OF CustomerTY (
@@ -151,7 +151,7 @@ BEGIN
         CONSTRAINT chk_equip_capacity CHECK (Equipment_Capacity >= 0),
         Booking_Count NOT NULL,
         CONSTRAINT chk_booking_count CHECK (Booking_Count >= 0),
-        Customer NOT NULL REFERENCES Customer ON DELETE CASCADE
+        Customer REFERENCES Customer ON DELETE SET NULL
     )';
 
     EXECUTE IMMEDIATE 'CREATE TABLE Booking OF BookingTY (
